@@ -25,31 +25,45 @@
 <header class="topbar">
   <div class="page">
     <a class="wordmark" href="/" aria-current="page"><span class="prompt" aria-hidden="true">~/</span>grant-ps.com<span class="cursor" aria-hidden="true"></span></a>
-    <nav aria-label="Site"><a href="https://github.com/grantspeelman/grant-ps.com">source</a></nav>
+    <nav aria-label="Site"><a href="/feed.xml">rss</a><a href="https://github.com/grantspeelman/grant-ps.com">source</a></nav>
   </div>
 </header>
 
 <main id="content" class="page home">
-  <h1>Grant <span class="nowrap">Petersen-Speelman</span></h1>
-  <p class="todo">TODO(grant): a line or two about who you are and what you write about.</p>
+  <section class="hero">
+    <div>
+      <p class="cmd" aria-hidden="true"><span class="dollar">$</span> whoami</p>
+      <h1>Grant <span class="nowrap">Petersen-Speelman</span></h1>
+      <p class="cmd" aria-hidden="true"><span class="dollar">$</span> cat about.txt</p>
+      <p class="todo">TODO(grant): a line or two about who you are and what you write about.</p>
+    </div>
+    <pre class="spec" aria-hidden="true"><span class="k">source:</span>  <span class="v">markdown</span>
+<span class="k">html:</span>    <span class="v">written by hand</span>
+<span class="k">build:</span>   <span class="v">none</span>
+<span class="k">host:</span>    <span class="v">cloudflare</span>
+<span class="k">theme:</span>   <span class="v">follows your system</span></pre>
+  </section>
 
-  <section aria-labelledby="writing">
+  <section class="sect" aria-labelledby="writing">
     <p class="cmd" aria-hidden="true"><span class="dollar">$</span> ls -t posts/</p>
     <h2 id="writing">Writing</h2>
     <p class="ls-empty">No posts yet.</p>
   </section>
 
-  <section aria-labelledby="elsewhere">
+  <section class="sect" aria-labelledby="elsewhere">
     <p class="cmd" aria-hidden="true"><span class="dollar">$</span> cat writing-elsewhere.txt</p>
     <h2 id="elsewhere">Writing elsewhere</h2>
-    <ul class="ls">
+    <ul class="ledger compact">
       <li><span class="venue">dev.to</span><a href="https://example.com">TODO(grant)</a></li>
     </ul>
   </section>
 </main>
 
 <footer class="site-foot">
-  <div class="page"><a href="/feed.xml">RSS feed</a><a href="https://github.com/grantspeelman/grant-ps.com">Source on GitHub</a></div>
+  <div class="page">
+    <nav aria-label="Footer"><a href="/feed.xml">RSS feed</a><a href="https://github.com/grantspeelman/grant-ps.com">Source on GitHub</a></nav>
+    <p>Markdown in, hand-written HTML out. No build step.</p>
+  </div>
 </footer>
 </body>
 </html>
