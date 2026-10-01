@@ -7,6 +7,7 @@ module Blog
   # checked is exactly what gets committed.
   class Precommit
     POST_PATH = %r{\Asite/posts/([^/]+)/}
+    INTRO_PATHS = %w[site/index.html site/intro.md].freeze
 
     def initialize(repo, env: ENV, out: $stdout, err: $stderr)
       @repo = File.expand_path(repo)
@@ -19,6 +20,9 @@ module Blog
     def self.staged_post_slugs(repo)
       new(repo).staged_paths.filter_map { |p| p[POST_PATH, 1] }.uniq.sort
     end
+
+    # The home page intro is checked when the home page or its markdown is staged.
+    def self.intro_staged?(repo) = new(repo).staged_paths.intersect?(INTRO_PATHS)
 
     def staged_paths = git("diff", "--cached", "--name-only", "-z", "--no-renames").split("\0")
 
@@ -84,7 +88,13 @@ module Blog
         next [] unless File.directory?(File.join(site.posts_dir, slug))
         r = guard.check(slug)
         r.ok? ? [] : ["bin/guard #{slug} failed:\n#{r.errors.join("\n")}"]
-      end
+      end + check_intro(guard)
+    end
+
+    def check_intro(guard)
+      return [] unless staged_paths.intersect?(INTRO_PATHS)
+      r = guard.check_intro
+      r.ok? ? [] : ["bin/guard --intro failed:\n#{r.errors.join("\n")}"]
     end
 
     def check_meta(site)

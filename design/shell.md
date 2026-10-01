@@ -141,7 +141,7 @@ Posts add the shared enhancement script after the stylesheet: `<script src="/ass
       <p class="cmd" aria-hidden="true"><span class="dollar">$</span> whoami</p>
       <h1>{{site_title}}</h1>
       <p class="cmd" aria-hidden="true"><span class="dollar">$</span> cat about.txt</p>
-      <p class="todo">TODO(grant): a line or two about who you are and what you write about.</p>
+      <div class="intro" data-intro>{{intro}}</div>
     </div>
     <pre class="spec" aria-hidden="true"><span class="k">source:</span>  <span class="v">markdown</span>
 <span class="k">html:</span>    <span class="v">written by hand</span>
@@ -180,7 +180,8 @@ Posts add the shared enhancement script after the stylesheet: `<script src="/ass
 
 - In `{{site_title}}` inside the `<h1>`, wrap the hyphenated surname in `<span class="nowrap">` so it does not break at the hyphen.
 - The count reads `1 entry` or `{{n}} entries`. With no posts, leave the count out and replace the list with `<p class="ls-empty">No posts yet.</p>`.
-- The `TODO(grant)` intro stays until Grant writes one; then his words replace it verbatim in `<p class="intro">`.
+- `{{intro}}` is the output of `bin/render --intro`, pasted in unchanged: Grant's intro from `site/intro.md`, rendered by the same renderer as posts. `bin/guard --intro` checks it word for word, like a post body. Never write or edit `site/intro.md` yourself.
+- Until `site/intro.md` exists, the intro is a placeholder instead of the `data-intro` div: `<p class="todo">TODO(grant): a line or two about who you are and what you write about.</p>`.
 - The `site.yml` card is decorative and states only facts about how the site is made. Keep its wording unless the facts change.
 
 ## 404 main

@@ -12,6 +12,7 @@ module Blog
 
     def site_dir = File.join(root, "site")
     def posts_dir = File.join(site_dir, "posts")
+    def intro_path = File.join(site_dir, "intro.md")
     def base_url = config.fetch("base_url").chomp("/")
     def home_url = "#{base_url}/"
     def feed_url = "#{base_url}/feed.xml"

@@ -119,4 +119,58 @@ class GuardTest < Minitest::Test
       assert r.ok?, r.errors.join("\n")
     end
   end
+
+  # The home page intro, guarded against site/intro.md.
+  def with_home_edit(from, to)
+    with_fixture_copy do |root|
+      path = File.join(root, "site/index.html")
+      html = File.read(path)
+      assert html.include?(from), "fixture home page should contain #{from.inspect}"
+      File.write(path, html.sub(from, to))
+      yield Blog::Guard.new(Blog::Site.new(root)).check_intro
+    end
+  end
+
+  def test_intro_passes_known_good_home_page
+    r = Blog::Guard.new(Blog::Site.new(FIXTURE_ROOT)).check_intro
+    assert r.ok?, r.errors.join("\n")
+  end
+
+  def test_intro_fails_on_reworded_text
+    with_home_edit("A second paragraph.", "A 2nd paragraph.") do |r|
+      assert_fails r, /home page intro does not match site\/intro\.md/
+      assert_match "Never edit site/intro.md", r.errors.join
+    end
+  end
+
+  def test_intro_fails_on_changed_quote_character
+    with_home_edit("“testing”", "\"testing\"") { |r| assert_fails r, /first difference at character/ }
+  end
+
+  def test_intro_fails_on_dropped_paragraph
+    with_home_edit("<p>A second paragraph.</p>", "") { |r| assert_fails r, /page is missing content/ }
+  end
+
+  def test_intro_fails_on_missing_link
+    with_home_edit('<a href="https://example.com/fixtures">fixtures</a>', "fixtures") do |r|
+      assert_fails r, %r{link target from the markdown is missing from the home page intro: https://example.com/fixtures}
+    end
+  end
+
+  def test_intro_fails_on_placeholder_left_in_place
+    with_home_edit(" data-intro", "") { |r| assert_fails r, /exactly one \[data-intro\] element, found 0/ }
+  end
+
+  def test_intro_ignores_flare_content
+    with_home_edit("<p>A second paragraph.</p>", %(<p>A second paragraph.</p><span data-flare>~</span>)) { |r| assert r.ok?, r.errors.join("\n") }
+  end
+
+  def test_intro_not_checked_until_intro_md_exists
+    with_fixture_copy do |root|
+      File.delete(File.join(root, "site/intro.md"))
+      File.write(File.join(root, "site/index.html"), "<p class=\"todo\">TODO(grant): an intro.</p>")
+      r = Blog::Guard.new(Blog::Site.new(root)).check_intro
+      assert r.ok?, r.errors.join("\n")
+    end
+  end
 end

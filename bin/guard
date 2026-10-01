@@ -1,31 +1,42 @@
 #!/usr/bin/env ruby
-# Fidelity guard: prove each post page contains the author's words from index.md exactly.
-#   bin/guard          posts with staged changes
+# Fidelity guard: prove each post page contains the author's words from index.md exactly,
+# and the home page intro contains site/intro.md exactly.
+#   bin/guard          posts with staged changes, and the intro if site/index.html or site/intro.md is staged
 #   bin/guard <slug>   one or more posts
-#   bin/guard --all    every post
+#   bin/guard --intro  the home page intro only
+#   bin/guard --all    every post and the intro
 require "optparse"
 require_relative "../lib/blog"
 
 all = false
+intro = false
 root = File.expand_path("..", __dir__)
 OptionParser.new do |o|
-  o.banner = "Usage: bin/guard [--all | slug...] [--root DIR]"
-  o.on("--all", "Check every post") { all = true }
+  o.banner = "Usage: bin/guard [--all | --intro | slug...] [--root DIR]"
+  o.on("--all", "Check every post and the home page intro") { all = true }
+  o.on("--intro", "Check the home page intro against site/intro.md") { intro = true }
   o.on("--root DIR", "Repo root (default: this repo)") { |d| root = d }
 end.parse!
 
 site = Blog::Site.new(root)
 slugs = if all then site.post_slugs
-        elsif ARGV.any? then ARGV
+        elsif intro || ARGV.any? then ARGV
         else Blog::Precommit.staged_post_slugs(root).select { |s| File.directory?(File.join(site.posts_dir, s)) }
         end
-if slugs.empty?
-  puts "bin/guard: no posts to check#{' (nothing staged; use --all or a slug)' unless all}"
+intro ||= all || (ARGV.empty? && Blog::Precommit.intro_staged?(root))
+if slugs.empty? && !intro
+  puts "bin/guard: no posts to check#{' (nothing staged; use --all, --intro or a slug)' unless all}"
   exit 0
 end
 
 guard = Blog::Guard.new(site)
-failed = slugs.map { |slug| guard.check(slug) }.reject do |r|
+if intro && !File.file?(site.intro_path)
+  puts "- #{Blog::Guard::INTRO}: no site/intro.md yet, nothing to check"
+  intro = false
+end
+results = slugs.map { |slug| guard.check(slug) }
+results << guard.check_intro if intro
+failed = results.reject do |r|
   puts "✓ #{r.slug}" if r.ok?
   r.ok?
 end

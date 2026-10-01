@@ -38,7 +38,7 @@ Read `design/BRIEF.md` and `design/shell.md` in full, and `site/assets/style.css
 
 ### 4. Regenerate `site/index.html`
 
-Follow the "Home main" section of `design/shell.md`: every post in `site/posts/`, newest first (date descending, then slug, the same order as the feed), then "Writing elsewhere" from `site.yml`. Keep Grant's intro text exactly as it is on the current home page (or the `TODO(grant)` placeholder if he has not written one).
+Follow the "Home main" section of `design/shell.md`: every post in `site/posts/`, newest first (date descending, then slug, the same order as the feed), then "Writing elsewhere" from `site.yml`. The intro comes from `site/intro.md`: paste the output of `bin/render --intro` into the `data-intro` div, unchanged. If there is no `site/intro.md`, keep the `TODO(grant)` placeholder. Never write or edit `site/intro.md`; it is Grant's text, like a post.
 
 ### 5. Build the feed and sitemap
 
@@ -46,7 +46,7 @@ Run `bin/meta`. Never edit `site/feed.xml` or `site/sitemap.xml` by hand.
 
 ### 6. Prove the words
 
-Run `bin/guard <slug>`. If it fails, it prints the first mismatched block from each side and a diff: fix the HTML and run it again, until it passes. Never "fix" the markdown to match the HTML.
+Run `bin/guard <slug> --intro` (the post, and the home page intro against `site/intro.md`). If it fails, it prints the first mismatched block from each side and a diff: fix the HTML and run it again, until it passes. Never "fix" the markdown to match the HTML.
 
 ### 7. Prove the page works
 

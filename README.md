@@ -8,6 +8,7 @@ Grant Petersen-Speelman's personal blog. Markdown is the source of truth; Claude
 - **Drafts** live in `drafts/<slug>/`, which is gitignored.
 - **Pages** (`site/posts/<slug>/index.html`, `site/index.html`, `site/404.html`) are written by Claude following `design/BRIEF.md` (engineering notebook, mobile first, WCAG 2.2 AA) and the mandatory shell in `design/shell.md`.
 - **Feed and sitemap** (`site/feed.xml`, `site/sitemap.xml`) are built by `bin/meta` straight from the markdown. Never edit them by hand.
+- **Home page intro** lives in `site/intro.md` (plain markdown, no frontmatter) and is guarded like a post.
 - **Fidelity guard** (`bin/guard`) proves each page contains the author's words exactly, in order. It runs in the pre-commit hook.
 - **Deploy** is dumb: Cloudflare serves the committed `site/` folder as static assets. No build step.
 
@@ -30,8 +31,8 @@ Cloudflare Workers Builds deploys on every push to `main`: no build command, dep
 |---|---|
 | `bin/setup` | Install gems and the browser-check tools, wire the git hooks |
 | `bin/meta` | Rebuild `feed.xml` and `sitemap.xml` (`--check` to verify only) |
-| `bin/render <slug>` | Print a post's body HTML from the markdown, the starting point for its page |
-| `bin/guard [slug\|--all]` | Fidelity check (default: staged posts) |
+| `bin/render <slug>` | Print a post's body HTML from the markdown, the starting point for its page (`--intro` for the home page intro) |
+| `bin/guard [slug\|--intro\|--all]` | Fidelity check (default: staged posts, plus the intro if the home page or `site/intro.md` is staged) |
 | `bin/check-pages [slug...]` | Accessibility (axe-core, light and dark), sideways-scroll and broken-asset checks, plus screenshots in `tmp/check-pages/` |
 | `bin/precommit` | What the hook runs: slug checks, guard, meta check, no drafts |
 | `bin/preview [slug]` | Serve `site/` on http://localhost:4000 |

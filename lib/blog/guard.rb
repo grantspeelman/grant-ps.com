@@ -8,6 +8,13 @@ module Blog
       def ok? = errors.empty?
     end
 
+    INTRO = "home intro"
+
+    # What the mismatch message names: the guarded text, its markdown source and its container.
+    Text = Struct.new(:what, :source, :marker)
+    POST_TEXT = Text.new("post body text", "index.md", "[data-post-body]")
+    INTRO_TEXT = Text.new("home page intro", "site/intro.md", "[data-intro]")
+
     def initialize(site) = @site = site
 
     def check(slug)
@@ -34,9 +41,28 @@ module Blog
       body.css("[data-flare]").each(&:remove)
       expected_frag = Nokogiri::HTML5.fragment(Markdown.render(post.body))
 
-      errors.concat(compare_blocks(Blocks.extract(expected_frag), Blocks.extract(body)))
-      errors.concat(check_targets(post, expected_frag, body))
+      errors.concat(compare_blocks(Blocks.extract(expected_frag), Blocks.extract(body), POST_TEXT))
+      errors.concat(check_targets(@site.post_url(post.folder), expected_frag, body, "post body"))
       Result.new(slug, errors)
+    end
+
+    # Proves the home page's [data-intro] contains Grant's intro from site/intro.md exactly.
+    # Until site/intro.md exists there is nothing to guard: the page shows a TODO placeholder.
+    def check_intro
+      return Result.new(INTRO, []) unless File.file?(@site.intro_path)
+      home = File.join(@site.site_dir, "index.html")
+      return Result.new(INTRO, ["missing site/index.html"]) unless File.file?(home)
+
+      intros = Nokogiri::HTML5(File.read(home)).css("[data-intro]")
+      return Result.new(INTRO, ["site/index.html must have exactly one [data-intro] element, found #{intros.size} " \
+                                "(put the output of bin/render --intro in it)"]) if intros.size != 1
+
+      intro = intros.first.dup
+      intro.css("[data-flare]").each(&:remove)
+      expected_frag = Nokogiri::HTML5.fragment(Markdown.render(File.read(@site.intro_path)))
+      errors = compare_blocks(Blocks.extract(expected_frag), Blocks.extract(intro), INTRO_TEXT)
+      errors.concat(check_targets(@site.home_url, expected_frag, intro, "home page intro"))
+      Result.new(INTRO, errors)
     end
 
     private
@@ -55,13 +81,13 @@ module Blog
       errs
     end
 
-    def compare_blocks(expected, actual)
+    def compare_blocks(expected, actual, t)
       exp = expected.map(&:comparable)
       act = actual.map(&:comparable)
       return [] if exp == act
 
       i = (0...[exp.size, act.size].max).find { |n| exp[n] != act[n] }
-      msg = +"post body text does not match index.md (block #{i + 1} of #{expected.size} expected)\n"
+      msg = +"#{t.what} does not match #{t.source} (block #{i + 1} of #{expected.size} expected)\n"
       msg << "  markdown says: #{expected[i] ? expected[i].to_s : '(nothing: the page has extra content here)'}\n"
       msg << "  page has:      #{actual[i] ? actual[i].to_s : '(nothing: the page is missing content from here on)'}\n"
       if expected[i] && actual[i] && !expected[i].code? && !actual[i].code?
@@ -73,8 +99,8 @@ module Blog
       end
       msg << "  diff (- markdown, + page):\n"
       msg << short_diff(expected, actual, i)
-      msg << "  Fix the HTML so its text matches the markdown exactly. Never edit index.md to match the page.\n"
-      msg << "  Content that is not the author's text must go outside [data-post-body] or inside a [data-flare] element."
+      msg << "  Fix the HTML so its text matches the markdown exactly. Never edit #{t.source} to match the page.\n"
+      msg << "  Content that is not the author's text must go outside #{t.marker} or inside a [data-flare] element."
       [msg]
     end
 
@@ -117,13 +143,12 @@ module Blog
       lines.map { |l| l.length > 110 ? "#{l[0, 107]}...\n" : "#{l}\n" }.join
     end
 
-    # Every image src and link href in the markdown must appear in the page body.
-    def check_targets(post, expected_frag, body)
-      base = @site.post_url(post.folder)
+    # Every image src and link href in the markdown must appear in the guarded element.
+    def check_targets(base, expected_frag, body, where)
       want = targets(expected_frag, base)
       have = targets(body, base)
       (want - have).map do |kind, url|
-        "#{kind} target from the markdown is missing from the post body: #{url}"
+        "#{kind} target from the markdown is missing from the #{where}: #{url}"
       end.uniq
     end
 

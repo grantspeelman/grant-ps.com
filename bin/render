@@ -2,17 +2,26 @@
 # Print a post's body HTML, rendered by the same renderer the feed and guard use, with the
 # shell's mechanical code-block change applied. Paste it into [data-post-body] and style around it.
 #   bin/render <slug>
+#   bin/render --intro   the home page intro from site/intro.md, for [data-intro]
 require "optparse"
 require_relative "../lib/blog"
 
 root = File.expand_path("..", __dir__)
+intro = false
 OptionParser.new do |o|
-  o.banner = "Usage: bin/render <slug> [--root DIR]"
+  o.banner = "Usage: bin/render <slug> | --intro [--root DIR]"
+  o.on("--intro", "Render site/intro.md, the home page intro") { intro = true }
   o.on("--root DIR", "Repo root (default: this repo)") { |d| root = d }
 end.parse!
-abort "Usage: bin/render <slug>" unless ARGV.size == 1
 
 site = Blog::Site.new(root)
+if intro
+  abort "Usage: bin/render --intro" unless ARGV.empty?
+  abort "bin/render: no #{site.intro_path} yet" unless File.file?(site.intro_path)
+  puts Blog::Markdown.page_body(File.read(site.intro_path))
+  exit
+end
+abort "Usage: bin/render <slug> | --intro" unless ARGV.size == 1
 dir = File.join(site.posts_dir, ARGV.first)
 abort "bin/render: no post at #{dir}/index.md" unless File.file?(File.join(dir, "index.md"))
 puts Blog::Markdown.page_body(site.post(ARGV.first).body)

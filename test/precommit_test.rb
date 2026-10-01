@@ -99,4 +99,24 @@ class PrecommitTest < Minitest::Test
     git "add", "-f", "drafts/wip/index.md"
     assert_blocked(/files under drafts\/ are staged/)
   end
+
+  def test_blocks_reworded_home_page_intro
+    edit("site/index.html") { |h| h.sub("A second paragraph.", "A 2nd paragraph.") }
+    git "add", "-A"
+    assert_blocked(/bin\/guard --intro failed/)
+  end
+
+  def test_blocks_intro_md_change_without_home_page
+    edit("site/intro.md") { |m| m.sub("A second paragraph.", "A new second paragraph.") }
+    git "add", "-A"
+    assert_blocked(/home page intro does not match site\/intro\.md/)
+  end
+
+  def test_allows_intro_change_with_matching_home_page
+    edit("site/intro.md") { |m| m.sub("A second paragraph.", "A new second paragraph.") }
+    edit("site/index.html") { |h| h.sub("A second paragraph.", "A new second paragraph.") }
+    git "add", "-A"
+    out, ok = precommit
+    assert ok, out
+  end
 end

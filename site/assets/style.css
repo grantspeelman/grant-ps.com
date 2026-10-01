@@ -95,6 +95,8 @@ a:hover { text-decoration-thickness: 2px; }
 @media (min-width: 40rem) { .home h1 { font-size: 3.8rem; } }
 .todo { border: 1px dashed var(--accent); padding: .4rem .75rem; display: inline-block; margin: 0; }
 .intro { margin: 0; max-width: 34rem; }
+.intro > * { margin: 0; }
+.intro > * + * { margin-top: .75rem; }
 .spec { position: relative; max-width: 100%; margin-top: .6rem; font-family: var(--mono); font-size: .8rem; line-height: 1.75; color: var(--muted); border: 1px solid var(--rule); background: var(--card); padding: 1.1rem 1.2rem .9rem; border-radius: 6px; margin: 0; white-space: pre-wrap; }
 .spec::before { content: "site.yml"; position: absolute; top: -.8em; left: .9rem; line-height: 1.4; background: var(--paper); border-radius: 3px; padding: 0 .45em; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .spec .k { color: var(--ink); }
