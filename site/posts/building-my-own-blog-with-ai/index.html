@@ -1,27 +1,73 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-  <channel>
-    <title>Grant Petersen-Speelman</title>
-    <link>https://grant-ps.com/</link>
-    <description>Writing by Grant Petersen-Speelman</description>
-    <language>en</language>
-    <atom:link href="https://grant-ps.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Thu, 01 Oct 2026 00:00:00 +0000</lastBuildDate>
-    <item>
-      <title>I built my own blog with an AI agent</title>
-      <link>https://grant-ps.com/posts/building-my-own-blog-with-ai/</link>
-      <guid isPermaLink="true">https://grant-ps.com/posts/building-my-own-blog-with-ai/</guid>
-      <pubDate>Thu, 01 Oct 2026 00:00:00 +0000</pubDate>
-      <description>A plan, a three hour time box and Claude Code: every step it took to get grant-ps.com live, and why I think more of us will start building our own software.</description>
-      <category>ai</category>
-      <category>blogging</category>
-      <category>cloudflare</category>
-      <category>ruby</category>
-      <content:encoded><![CDATA[<p>A plan, a three hour time box, and an AI agent doing the typing. Everything it took to get this site live.</p>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I built my own blog with an AI agent · Grant Petersen-Speelman</title>
+<meta name="description" content="A plan, a three hour time box and Claude Code: every step it took to get grant-ps.com live, and why I think more of us will start building our own software.">
+<link rel="canonical" href="https://grant-ps.com/posts/building-my-own-blog-with-ai/">
+<link rel="alternate" type="application/rss+xml" title="Grant Petersen-Speelman" href="/feed.xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Grant Petersen-Speelman">
+<meta property="og:title" content="I built my own blog with an AI agent">
+<meta property="og:description" content="A plan, a three hour time box and Claude Code: every step it took to get grant-ps.com live, and why I think more of us will start building our own software.">
+<meta property="og:url" content="https://grant-ps.com/posts/building-my-own-blog-with-ai/">
+<meta property="og:image" content="https://grant-ps.com/assets/og-default.png">
+<meta property="article:published_time" content="2026-10-01">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="I built my own blog with an AI agent">
+<meta name="twitter:description" content="A plan, a three hour time box and Claude Code: every step it took to get grant-ps.com live, and why I think more of us will start building our own software.">
+<meta name="twitter:image" content="https://grant-ps.com/assets/og-default.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/notebook.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <div class="page">
+    <a class="wordmark" href="/"><span class="prompt" aria-hidden="true">~/</span>grant-ps.com<span class="cwd" aria-hidden="true"><span class="cwd-long">/posts/building-my-own-blog-with-ai</span><span class="cwd-short">/posts/…</span></span><span class="cursor" aria-hidden="true"></span></a>
+    <nav aria-label="Site"><a href="/feed.xml">rss</a><a href="https://github.com/grantspeelman/grant-ps.com">source</a></nav>
+  </div>
+</header>
+
+<main id="content" class="page">
+  <article class="entry">
+    <header class="entry-head">
+      <p class="label"><span>posts/building-my-own-blog-with-ai</span><span class="no">entry #001</span></p>
+      <h1>I built my own blog with an AI agent</h1>
+      <p class="abstract">A plan, a three hour time box and Claude Code: every step it took to get grant-ps.com live, and why I think more of us will start building our own software.</p>
+    </header>
+    <aside class="margin" aria-label="Post details">
+      <dl>
+        <dt>Logged</dt><dd><time datetime="2026-10-01">2026-10-01</time></dd>
+        <dt>Length</dt><dd>1526 words, 8 min</dd>
+        <dt>Tags</dt><dd><ul class="tags"><li>#ai</li><li>#blogging</li><li>#cloudflare</li><li>#ruby</li></ul></dd>
+        <dt>Source</dt><dd><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/building-my-own-blog-with-ai/index.md">Read the markdown source</a></dd>
+      </dl>
+      <nav class="ruler" aria-label="On this page">
+        <p>On this page</p>
+        <ol>
+          <li class="now" data-target="content"><a href="#content" aria-current="location">I built my own blog with an AI agent</a></li>
+          <li data-target="plan-first-then-hand-over-the-keys"><a href="#plan-first-then-hand-over-the-keys">Plan first, then hand over the keys</a></li>
+          <li data-target="instructions-are-advisory-a-guard-is-not"><a href="#instructions-are-advisory-a-guard-is-not">Instructions are advisory. A guard is not.</a></li>
+          <li data-target="three-designs-then-a-fourth"><a href="#three-designs-then-a-fourth">Three designs, then a fourth</a></li>
+          <li data-target="what-the-guard-could-not-see"><a href="#what-the-guard-could-not-see">What the guard could not see</a></li>
+          <li data-target="the-numbers"><a href="#the-numbers">The numbers</a></li>
+          <li data-target="getting-it-live"><a href="#getting-it-live">Getting it live</a></li>
+          <li data-target="off-the-shelf-is-losing-its-edge"><a href="#off-the-shelf-is-losing-its-edge">Off the shelf is losing its edge</a></li>
+          <li data-target="what-this-costs"><a href="#what-this-costs">What this costs</a></li>
+          <li data-target="where-this-leaves-things"><a href="#where-this-leaves-things">Where this leaves things</a></li>
+          <li><span class="eof">EOF</span></li>
+        </ol>
+      </nav>
+    </aside>
+    <div class="prose" data-post-body>
+<p>A plan, a three hour time box, and an AI agent doing the typing. Everything it took to get this site live.</p>
 <p>My writing has lived on other people's platforms: Medium, under NEXL Engineering, and dev.to. They work fine. They are also not mine. The URL, the design, the way a post gets from my head to the page, all of it belongs to somebody else.</p>
 <p>So I moved it to my own domain. But rather than pick a platform, I made it an experiment. Can an AI agent stand up a personal blog, with a publishing workflow I actually trust, in an afternoon?</p>
 <p>This post is the answer. It is also the first post on the blog it describes.</p>
-<h2>Plan first, then hand over the keys</h2>
+<h2 id="plan-first-then-hand-over-the-keys">Plan first, then hand over the keys<a class="anchor" href="#plan-first-then-hand-over-the-keys" aria-label="Link to this section"></a></h2>
 <p>Before the agent wrote a line of code, I wrote <code>PLAN.md</code>. Seventeen settled decisions, each with what it was chosen over. A three hour budget. Eight phases, one checkpoint where the agent had to stop and wait for me, and a list of things it was not allowed to do.</p>
 <p>The core idea fits in four lines:</p>
 <ul>
@@ -32,15 +78,15 @@
 </ul>
 <p>The second point is the unusual one. Letting an agent hand write every page means each post can get its own touch, and the whole site can be redesigned later by regenerating every page from the markdown. Nothing is locked into a theme.</p>
 <p>It also means trusting an agent with my words. That is where the third point comes in.</p>
-<h2>Instructions are advisory. A guard is not.</h2>
+<h2 id="instructions-are-advisory-a-guard-is-not">Instructions are advisory. A guard is not.<a class="anchor" href="#instructions-are-advisory-a-guard-is-not" aria-label="Link to this section"></a></h2>
 <p>The plan tells the agent never to alter, add to, reorder or omit my prose. That is an instruction, and I have written before about how far instructions get you.</p>
 <p>So there is a fidelity guard. It renders the markdown, pulls the post body out of the agent's HTML, and compares the two block by block: headings, paragraphs, list items, code lines. Whitespace may change. Nothing else may. A curly quote turned straight fails. A dropped code line fails. A reworded sentence fails, with a diff that tells the agent exactly what to fix.</p>
 <p>It runs as a pre-commit hook, so a bad page cannot be committed, by me or by the agent. In the end to end test it blocked a commit where a single word had changed on the page.</p>
 <p>The same idea later spread to the home page intro. A redesign rewrites the home page, so the intro got its own markdown file and the guard checks that too.</p>
-<h2>Three designs, then a fourth</h2>
+<h2 id="three-designs-then-a-fourth">Three designs, then a fourth<a class="anchor" href="#three-designs-then-a-fourth" aria-label="Link to this section"></a></h2>
 <p>The checkpoint was the design. The agent built three directions, each as a home page and a sample post: an editorial serif, an engineering notebook, and something loud in cobalt, coral and lemon.</p>
 <p>I asked for a fourth that combined the notebook with the loud one. Then I picked the notebook anyway, on two conditions: mobile first, and proper web accessibility. The agent rewrote the stylesheet mobile first and worked through the accessibility details one by one. A blinking cursor that stops after four blinks. Decorative shell prompts hidden from screen readers. A focus ring you can see on every surface.</p>
-<h2>What the guard could not see</h2>
+<h2 id="what-the-guard-could-not-see">What the guard could not see<a class="anchor" href="#what-the-guard-could-not-see" aria-label="Link to this section"></a></h2>
 <p>This was the most useful lesson of the build.</p>
 <p>The guard proves the words are right. It says nothing about whether the page reads right. Screenshots at phone and desktop width found eight bugs that no text check would ever catch. A few of them:</p>
 <ul>
@@ -51,9 +97,9 @@
 </ul>
 <p>So the agent built itself a second checker, <code>bin/check-pages</code>: accessibility checks with axe-core in light and dark mode, sideways scroll checks at three widths, and screenshots it has to look at before handing a page over. It was not in the plan. It is now the step I would least want to lose.</p>
 <p>The agent's own note at the end of its build log: build the screenshot checker in phase 2, not phase 5. I agree. It is the same lesson as <a href="https://dev.to/grantps/tooling-every-ai-software-harness-should-have-4512">my tooling post</a>. A tool only counts if the agent sees the output.</p>
-<h2>The numbers</h2>
+<h2 id="the-numbers">The numbers<a class="anchor" href="#the-numbers" aria-label="Link to this section"></a></h2>
 <p>The build took 2 hours 35 minutes of wall time, inside the three hour budget, including the time spent waiting for me to pick a design. It ended with 42 passing tests, a pre-commit hook proven against every failure case in the plan, two Claude Code skills, <code>/publish</code> and <code>/regenerate-site</code>, and a site ready to deploy that nobody could see yet.</p>
-<h2>Getting it live</h2>
+<h2 id="getting-it-live">Getting it live<a class="anchor" href="#getting-it-live" aria-label="Link to this section"></a></h2>
 <p>Then came the part the agent could not do alone. Clicking through dashboards is still my job. So I did it one step at a time, with the agent telling me what to do next and checking each step from its side before moving on.</p>
 <ol>
 <li>Bought grant-ps.com through Cloudflare Registrar.</li>
@@ -64,20 +110,30 @@
 <li>Added links to my writing elsewhere, and wrote the intro.</li>
 </ol>
 <p>From the first deploy to the intro being live took a little over an hour.</p>
-<h2>Off the shelf is losing its edge</h2>
+<h2 id="off-the-shelf-is-losing-its-edge">Off the shelf is losing its edge<a class="anchor" href="#off-the-shelf-is-losing-its-edge" aria-label="Link to this section"></a></h2>
 <p>Here is the thought that kept coming back while I did this.</p>
 <p>I could have used Medium, Ghost, WordPress, or a static site generator with a theme. Any of them would have worked. Every one of them would have meant accepting someone else's idea of what a blog is.</p>
 <p>What I got instead fits exactly how I want to work. My words in markdown, checked by a guard I can read. Pages that can be redesigned without touching a single post. A deploy with no moving parts. None of that is on a product roadmap anywhere, because nobody else needs exactly this combination. I did.</p>
 <p>Building it used to be the expensive part. You weighed weeks of evenings against a monthly subscription, and the subscription won. That trade has changed. The cost of something bespoke is now an afternoon of agent time and a plan worth following.</p>
 <p>I think more and more people are going to make that trade. Not for everything. Off the shelf will still win where the problem is genuinely shared and getting it wrong is expensive. But for the tools that sit closest to how you work, building your own is starting to beat adapting to someone else's. The default is going to flip.</p>
-<h2>What this costs</h2>
+<h2 id="what-this-costs">What this costs<a class="anchor" href="#what-this-costs" aria-label="Link to this section"></a></h2>
 <p>Worth being straight about the trade offs.</p>
 <p>You own all of it. There is no vendor to fix a bug, patch a security hole or keep the lights on. Here that is small on purpose: static files, no server code, no database. A bigger system carries a bigger bill.</p>
 <p>The plan did a lot of the work. The agent was fast because the decisions were already made. Skipping that step would not have saved time. It would have moved the thinking into the middle of the build, where it costs far more.</p>
 <p>And somebody still has to look. The agent caught most of its own mistakes, but only because it was told to screenshot and read its own pages. The checks are the reason this is trustworthy, not the agent.</p>
-<h2>Where this leaves things</h2>
+<h2 id="where-this-leaves-things">Where this leaves things<a class="anchor" href="#where-this-leaves-things" aria-label="Link to this section"></a></h2>
 <p>The site is live at grant-ps.com, the source is public at <a href="https://github.com/grantspeelman/grant-ps.com">github.com/grantspeelman/grant-ps.com</a>, and every post links to the markdown it was generated from. Next is syndication: dev.to will import posts from the RSS feed, with this site as the canonical home. After that, an editor app, which will be post number two.</p>
-<p>If you have been putting off building your own version of something because the off the shelf one was close enough, it might be worth another look. Happy coding.</p>]]></content:encoded>
-    </item>
-  </channel>
-</rss>
+<p>If you have been putting off building your own version of something because the off the shelf one was close enough, it might be worth another look. Happy coding.</p>
+    </div>
+    <footer class="entry-foot"><span aria-hidden="true">EOF</span><nav aria-label="Post"><a href="/">All writing</a><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/building-my-own-blog-with-ai/index.md">Read the markdown source</a></nav></footer>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="page">
+    <nav aria-label="Footer"><a href="/feed.xml">RSS feed</a><a href="https://github.com/grantspeelman/grant-ps.com">Source on GitHub</a></nav>
+    <p>Markdown in, hand-written HTML out. No build step.</p>
+  </div>
+</footer>
+</body>
+</html>
