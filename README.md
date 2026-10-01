@@ -22,7 +22,7 @@ For a redesign, use `/regenerate-site`. The design rules are in `design/BRIEF.md
 
 ## Deploy
 
-Cloudflare Workers Builds deploys on every push to `main`: no build command, deploy command `npx wrangler deploy`. `wrangler.jsonc` is an assets-only Worker serving `site/`; `site/.assetsignore` keeps the markdown off the site (it stays public on GitHub). Test posts never go in `site/posts/` on `main`: they would reach the feed and dev.to.
+Cloudflare Workers Builds deploys on every push to `main`: no build command, deploy command `npx wrangler deploy`. Other branches get a preview deployment from `npx wrangler preview`, which needs the `previews` block in `wrangler.jsonc`. `wrangler.jsonc` is an assets-only Worker serving `site/`; `site/.assetsignore` keeps the markdown off the site (it stays public on GitHub). Test posts never go in `site/posts/` on `main`: they would reach the feed and dev.to.
 
 ## Commands
 

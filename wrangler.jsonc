@@ -1,5 +1,5 @@
 // Cloudflare Workers config: an assets-only Worker (no script) that serves the committed site/ folder.
-// No build step. Workers Builds runs `npx wrangler deploy` on push to main.
+// No build step. Workers Builds runs `npx wrangler deploy` on push to main and `npx wrangler preview` on other branches.
 {
   "name": "grant-ps-com",
   "compatibility_date": "2026-09-27",
@@ -9,5 +9,11 @@
     "html_handling": "auto-trailing-slash",
     // Unknown URLs get site/404.html with a 404 status
     "not_found_handling": "404-page"
+  },
+  // Required by `wrangler preview` (preview deployments for pull request branches). There is nothing to install.
+  "previews": {
+    "vars": {
+      "SKIP_DEPENDENCY_INSTALL": "1"
+    }
   }
 }
