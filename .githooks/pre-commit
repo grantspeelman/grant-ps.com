@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Wired by bin/setup (git config core.hooksPath .githooks).
+set -euo pipefail
+# gitleaks ships in the sandbox image. Outside it, install gitleaks to get the
+# same check; CI scans the full history either way.
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --pre-commit --staged --redact --no-banner --verbose
+else
+  echo "warning: gitleaks not installed; skipping the staged secret scan." >&2
+fi
+exec "$(git rev-parse --show-toplevel)/bin/precommit"

@@ -1,0 +1,5 @@
+# Files in site/ that are never uploaded to Cloudflare (gitignore syntax).
+# The markdown stays public on GitHub through each post's "Read the markdown source" link.
+*.md
+.assetsignore
+.DS_Store

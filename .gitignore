@@ -1,0 +1,7 @@
+.env
+drafts/
+.bundle/
+vendor/bundle/
+.wrangler/
+node_modules/
+tmp/

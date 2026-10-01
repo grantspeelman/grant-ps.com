@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+# Pre-commit checks on the staged snapshot: no drafts, frozen slugs, bin/guard on
+# staged posts, bin/meta --check. Called by .githooks/pre-commit.
+require_relative "../lib/blog"
+
+exit(Blog::Precommit.new(File.expand_path("..", __dir__)).run ? 0 : 1)

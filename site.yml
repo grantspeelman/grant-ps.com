@@ -1,0 +1,11 @@
+title: "Grant Petersen-Speelman"
+base_url: "https://grant-ps.com"
+author: "Grant Petersen-Speelman"
+repo_url: "https://github.com/grantspeelman/grant-ps.com"
+source_url_template: "https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/%{slug}/index.md"
+analytics_token: ""            # Cloudflare Web Analytics token; Grant fills in
+default_og_image: "/assets/og-default.png"
+writing_elsewhere:             # Grant fills in; placeholder entries below
+  - title: "TODO(grant)"
+    url: "https://example.com"
+    venue: "dev.to"

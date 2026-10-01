@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# Fidelity guard: prove each post page contains the author's words from index.md exactly.
+#   bin/guard          posts with staged changes
+#   bin/guard <slug>   one or more posts
+#   bin/guard --all    every post
+require "optparse"
+require_relative "../lib/blog"
+
+all = false
+root = File.expand_path("..", __dir__)
+OptionParser.new do |o|
+  o.banner = "Usage: bin/guard [--all | slug...] [--root DIR]"
+  o.on("--all", "Check every post") { all = true }
+  o.on("--root DIR", "Repo root (default: this repo)") { |d| root = d }
+end.parse!
+
+site = Blog::Site.new(root)
+slugs = if all then site.post_slugs
+        elsif ARGV.any? then ARGV
+        else Blog::Precommit.staged_post_slugs(root).select { |s| File.directory?(File.join(site.posts_dir, s)) }
+        end
+if slugs.empty?
+  puts "bin/guard: no posts to check#{' (nothing staged; use --all or a slug)' unless all}"
+  exit 0
+end
+
+guard = Blog::Guard.new(site)
+failed = slugs.map { |slug| guard.check(slug) }.reject do |r|
+  puts "✓ #{r.slug}" if r.ok?
+  r.ok?
+end
+failed.each do |r|
+  warn "✗ #{r.slug}"
+  r.errors.each { |e| warn "  #{e.gsub("\n", "\n  ")}" }
+end
+exit(failed.empty? ? 0 : 1)

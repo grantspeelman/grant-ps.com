@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design explorations · grant-ps.com</title>
+<meta name="robots" content="noindex">
+<style>
+  body { font: 1.05rem/1.55 system-ui, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; color: #1b1b1b; background: #fafafa; }
+  h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .lede { color: #555; margin-top: 0; }
+  ol { padding: 0; list-style: none; display: grid; gap: 1rem; }
+  li { background: #fff; border: 1px solid #ddd; border-radius: .6rem; padding: 1rem 1.2rem; }
+  h2 { margin: 0 0 .2rem; font-size: 1.15rem; }
+  p { margin: .2rem 0; }
+  a { color: #1a4fd6; }
+</style>
+</head>
+<body>
+<h1>Four directions for grant-ps.com</h1>
+<p class="lede">Each has a home page and one sample post (the opening section of PLAN.md, plus the Wrangler snippet so code blocks show). Pick one, or a mix such as "A's type with C's colour".</p>
+<ol>
+  <li><h2>A. Editorial</h2><p>Warm paper, Newsreader serif, centred reading column, small caps, a drop cap and fleurons. Quiet and bookish.</p><p><a href="a/">Home</a> · <a href="a/posts/context-and-goal/">Post</a></p></li>
+  <li><h2>B. Engineering notebook</h2><p>Graph paper grid, IBM Plex Sans with JetBrains Mono, a margin column for metadata, terminal code blocks, follows the system dark mode.</p><p><a href="b/">Home</a> · <a href="b/posts/context-and-goal/">Post</a></p></li>
+  <li><h2>C. Bold and experimental</h2><p>Cobalt, coral and lemon, huge Bricolage Grotesque, card layouts with hard shadows. The post includes a flare element (an animated time budget dial) to show what per-post flare can do.</p><p><a href="c/">Home</a> · <a href="c/posts/context-and-goal/">Post</a></p></li>
+  <li><h2>D. Loud notebook (B with C)</h2><p>B's notebook structure (graph paper, sticky metadata column, mono labels, terminal code blocks, dark mode) with C's cobalt, coral and lemon, Bricolage Grotesque headlines, hard shadows and the time budget dial. Built to WCAG 2.2 AA: every text colour pair checked, coral used only as decoration, underlined links, a visible focus ring on every surface, keyboard-scrollable code, reduced-motion support, reflows to 320px.</p><p><a href="d/">Home</a> · <a href="d/posts/context-and-goal/">Post</a></p></li>
+</ol>
+<p>All three pass <code>bin/guard</code> against the sample markdown in <code>sample/index.md</code>. Links inside the explorations are relative so they work from this folder; the real site uses root paths.</p>
+</body>
+</html>

@@ -1,0 +1,16 @@
+/* Self-hosted, latin subset only. All fonts SIL Open Font License, from Google Fonts. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(fonts/bricolage-grotesque-normal-400-800.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(fonts/jetbrains-mono-normal-400-700.woff2) format('woff2');
+}

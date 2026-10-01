@@ -1,0 +1,99 @@
+/* Direction C: Bold and experimental. Strong colour, big type, room for per-post flare. */
+@import url("fonts.css");
+
+:root {
+  --paper: #fff8ec;
+  --ink: #121212;
+  --cobalt: #2233ff;
+  --coral: #ff5b3a;
+  --lemon: #ffe14d;
+  --muted: #4b4640;
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--paper); color: var(--ink); -webkit-text-size-adjust: 100%; }
+body { margin: 0; font: 400 clamp(1.06rem, 0.98rem + 0.35vw, 1.2rem)/1.6 var(--body); font-variation-settings: "opsz" 14; }
+a { color: var(--cobalt); text-decoration-thickness: 2px; text-underline-offset: .18em; }
+a:hover { background: var(--lemon); color: var(--ink); }
+:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 1rem; top: 1rem; background: var(--lemon); padding: .5rem 1rem; z-index: 9; }
+
+/* Bar */
+.bar { background: var(--ink); color: var(--paper); }
+.bar .in { max-width: 80rem; margin: 0 auto; padding: .8rem clamp(1.25rem, 4vw, 3rem); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.bar a { color: inherit; text-decoration: none; }
+.bar .mark { font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96; letter-spacing: -0.02em; font-size: 1.15rem; }
+.bar .mark span { color: var(--lemon); }
+.bar nav a { font-weight: 600; border: 2px solid currentColor; border-radius: 99px; padding: .15rem .8rem; font-size: .9rem; }
+.bar nav a:hover { background: var(--lemon); color: var(--ink); border-color: var(--lemon); }
+
+/* Hero */
+.hero { background: var(--cobalt); color: #fff; overflow: hidden; }
+.hero .in { max-width: 80rem; margin: 0 auto; padding: clamp(3rem, 10vw, 8rem) clamp(1.25rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4.5rem); position: relative; }
+.hero h1 {
+  font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96;
+  font-size: clamp(3.2rem, 1rem + 10vw, 9.5rem); line-height: .88; letter-spacing: -0.045em;
+  margin: 0; max-width: 11ch; text-wrap: balance;
+}
+.hero .dek { max-width: 34rem; font-size: 1.2em; margin: 1.8rem 0 0; line-height: 1.45; }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; padding: 0; margin: 2rem 0 0; }
+.chips li { background: var(--lemon); color: var(--ink); font-weight: 700; font-size: .85rem; border-radius: 99px; padding: .2rem .8rem; }
+.chips li.date { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.7); }
+.hero .blob { position: absolute; right: -6rem; top: -5rem; width: 22rem; height: 22rem; border-radius: 50%; background: var(--coral); mix-blend-mode: normal; opacity: .95; }
+.hero .blob + .blob { width: 9rem; height: 9rem; right: 12rem; top: auto; bottom: -3rem; background: var(--lemon); }
+@media (max-width: 40rem) { .hero .blob { width: 12rem; height: 12rem; right: -5rem; top: -4rem; } .hero .blob + .blob { display: none; } }
+.hero h1, .hero .dek, .hero .chips { position: relative; z-index: 1; }
+
+/* Body layout */
+.body { max-width: 80rem; margin: 0 auto; padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem); display: grid; gap: 2rem 4rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 60rem) { .body { grid-template-columns: 14rem minmax(0, 40rem); } }
+.side { font-size: .9rem; }
+@media (min-width: 60rem) { .side { position: sticky; top: 2rem; align-self: start; } }
+.side .source { display: block; background: var(--ink); color: var(--paper); text-decoration: none; padding: 1rem; border-radius: 1rem; font-weight: 700; line-height: 1.3; }
+.side .source:hover { background: var(--coral); color: var(--ink); }
+.side .source small { display: block; font-weight: 400; opacity: .8; margin-top: .3rem; }
+
+.prose :where(p) { margin: 0; }
+.prose > * + * { margin-top: 1.1em; }
+.prose > p:first-child { font-size: 1.3em; line-height: 1.45; font-weight: 500; }
+.prose strong { font-weight: 700; box-shadow: inset 0 -0.42em 0 var(--lemon); }
+.prose h2 { font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96; font-size: clamp(2rem, 1.4rem + 2.5vw, 3.2rem); line-height: .95; letter-spacing: -0.035em; color: var(--coral); margin: 2em 0 0; text-wrap: balance; }
+.prose ul { list-style: none; padding: 0; counter-reset: idea; display: grid; gap: 1rem; }
+.prose li { counter-increment: idea; position: relative; padding: 1.1rem 1.2rem 1.1rem 4.2rem; background: #fff; border: 2px solid var(--ink); border-radius: 1rem; box-shadow: 5px 5px 0 var(--ink); }
+.prose li::before { content: counter(idea, decimal-leading-zero); position: absolute; left: 1rem; top: .75rem; font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96; font-size: 1.9rem; color: var(--cobalt); line-height: 1; }
+.prose code { font-family: var(--mono); font-size: .82em; background: var(--lemon); padding: .05em .35em; border-radius: 4px; }
+.prose pre { font-family: var(--mono); font-size: .82rem; line-height: 1.6; background: var(--ink); color: var(--lemon); padding: 1.4rem; border-radius: 1rem; overflow-x: auto; box-shadow: 8px 8px 0 var(--coral); margin-top: 1.6em; }
+.prose pre code { background: none; padding: 0; font-size: inherit; }
+
+.post-foot { grid-column: -2 / -1; border-top: 3px solid var(--ink); padding-top: 1rem; margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-weight: 600; }
+
+/* Home */
+.home-hero { background: var(--lemon); }
+.home-hero .in { max-width: 80rem; margin: 0 auto; padding: clamp(3rem, 9vw, 7rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 5vw, 4rem); }
+.home-hero h1 { font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96; font-size: clamp(2.2rem, 0.2rem + 9.5vw, 10rem); line-height: .85; letter-spacing: -0.05em; margin: 0; }
+.home-hero h1 .second { color: var(--cobalt); display: block; }
+.todo { display: inline-block; margin: 1.5rem 0 0; border: 2px dashed var(--ink); padding: .4rem .8rem; border-radius: .6rem; font-weight: 600; }
+.home-main { max-width: 80rem; margin: 0 auto; padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3rem); }
+.home-main h2 { font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96; font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem); letter-spacing: -0.03em; margin: 0 0 1.25rem; }
+.cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); }
+.card a { display: flex; flex-direction: column; height: 100%; min-height: 16rem; background: var(--cobalt); color: #fff; text-decoration: none; border-radius: 1.5rem; padding: 1.6rem; border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); transition: transform .15s ease, box-shadow .15s ease; }
+.card a:hover { transform: translate(-3px, -3px); box-shadow: 11px 11px 0 var(--ink); background: var(--cobalt); color: #fff; }
+.card time { font-weight: 600; font-size: .9rem; opacity: .9; }
+.card h3 { font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96; font-size: 2.2rem; line-height: .95; letter-spacing: -0.03em; margin: .6rem 0 auto; }
+.card p { margin: 1.2rem 0 0; font-size: .95rem; line-height: 1.45; }
+.elsewhere { margin-top: 4rem; }
+.elsewhere ul { list-style: none; padding: 0; margin: 0; border-top: 3px solid var(--ink); }
+.elsewhere li { border-bottom: 3px solid var(--ink); }
+.elsewhere a { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem .25rem; text-decoration: none; color: var(--ink); font-size: 1.3rem; font-weight: 700; }
+.elsewhere a:hover { background: var(--coral); }
+.elsewhere .venue { font-weight: 400; font-size: 1rem; }
+@media (prefers-reduced-motion: reduce) { .card a { transition: none; } }
+
+.site-foot { background: var(--ink); color: var(--paper); margin-top: 4rem; }
+.site-foot .in { max-width: 80rem; margin: 0 auto; padding: 2rem clamp(1.25rem, 4vw, 3rem) 3rem; display: flex; gap: 1.5rem; flex-wrap: wrap; font-weight: 600; }
+.site-foot a { color: var(--lemon); }
+.nowrap { white-space: nowrap; }

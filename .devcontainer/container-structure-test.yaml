@@ -1,0 +1,82 @@
+# .devcontainer/Dockerfile spec: the executable documentation of what the image
+# ships. When the Dockerfile changes a pin, update the matching test in the same
+# commit; CI (.github/workflows/devcontainer-ci.yml) fails otherwise.
+#
+# Image design:
+#   • Base ruby:4.0.7-slim-bookworm; Node 22 from NodeSource; gh from its apt repo.
+#     Claude Code and Playwright come from npm, so they are unpinned here.
+#   • gitleaks is a checksummed release binary, pinned exactly.
+#   • Playwright's Chromium lives in /opt/playwright-browsers (bin/check-pages).
+#   • User `sandbox` is remapped to the host UID/GID by entrypoint.sh at run time.
+#   • GitHub's SSH host keys are pinned in /etc/ssh/ssh_known_hosts.
+
+schemaVersion: 2.0.0
+
+metadataTest:
+  workdir: "/workspace"
+  entrypoint: ["/usr/local/bin/entrypoint.sh"]
+  envVars:
+    - key: HOME
+      value: /home/sandbox
+    - key: PLAYWRIGHT_BROWSERS_PATH
+      value: /opt/playwright-browsers
+
+fileExistenceTests:
+  - name: entrypoint script installed
+    path: /usr/local/bin/entrypoint.sh
+    shouldExist: true
+    isExecutableBy: any
+
+  - name: Playwright Chromium downloaded
+    path: /opt/playwright-browsers
+    shouldExist: true
+
+fileContentTests:
+  - name: sandbox user has the expected home and shell
+    path: /etc/passwd
+    expectedContents: ['sandbox:x:\d+:\d+:[^:]*:/home/sandbox:/bin/bash']
+
+  - name: GitHub SSH host keys are pinned
+    path: /etc/ssh/ssh_known_hosts
+    expectedContents: ['github\.com ssh-ed25519 ']
+
+commandTests:
+  - name: ruby is 4.0.7 (base image)
+    command: ruby
+    args: ["--version"]
+    expectedOutput: ['ruby 4\.0\.7']
+
+  - name: node is 22.x (NODE_MAJOR)
+    command: node
+    args: ["--version"]
+    expectedOutput: ['^v22\.']
+
+  - name: gitleaks is 8.30.1 (GITLEAKS_VERSION)
+    command: gitleaks
+    args: ["version"]
+    expectedOutput: ['8\.30\.1']
+
+  - name: gh available
+    command: gh
+    args: ["--version"]
+    expectedOutput: ['gh version']
+
+  - name: claude CLI available
+    command: claude
+    args: ["--version"]
+    exitCode: 0
+
+  - name: playwright resolves from the global node_modules
+    command: node
+    args: ["-e", "require('playwright')"]
+    exitCode: 0
+
+  - name: bubblewrap and socat installed (Claude Code's Linux sandbox)
+    command: bash
+    args: ["-c", "bwrap --version && socat -V"]
+    expectedOutput: ['bubblewrap \d']
+
+  - name: baseline utilities installed
+    command: bash
+    args: ["-c", "git --version && ssh -V && gosu --version"]
+    exitCode: 0

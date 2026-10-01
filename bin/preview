@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+# Serve site/ on http://localhost:4000, mirroring Cloudflare's asset handling:
+# auto-trailing-slash, 404.html for misses, and files matched by site/.assetsignore hidden.
+#   bin/preview [slug] [--port N] [--dir DIR]
+require "optparse"
+require_relative "../lib/blog"
+require "webrick"
+
+root = File.expand_path("..", __dir__)
+dir = File.join(root, "site")
+port = 4000
+OptionParser.new do |o|
+  o.banner = "Usage: bin/preview [slug] [--port N] [--dir DIR]"
+  o.on("--port N", Integer) { |n| port = n }
+  o.on("--dir DIR", "Serve another folder, e.g. design/explorations") { |d| dir = File.expand_path(d, root) }
+end.parse!
+slug = ARGV.first
+
+ignore_file = File.join(dir, ".assetsignore")
+IGNORED = (File.exist?(ignore_file) ? File.readlines(ignore_file, chomp: true) : [])
+  .map(&:strip).reject { |l| l.empty? || l.start_with?("#") }
+ignored = ->(rel) { IGNORED.any? { |pat| File.fnmatch?(pat, rel, File::FNM_PATHNAME) || File.fnmatch?(pat, File.basename(rel)) } }
+
+server = WEBrick::HTTPServer.new(Port: port, BindAddress: "0.0.0.0", AccessLog: [],
+                                 Logger: WEBrick::Log.new($stderr, WEBrick::Log::WARN))
+server.mount_proc "/" do |req, res|
+  path = URI.decode_www_form_component(req.path)
+  rel = path.delete_prefix("/")
+  full = File.expand_path(rel, dir)
+  file = nil
+  if !full.start_with?(dir) || rel.split("/").include?("..")
+    file = nil
+  elsif File.directory?(full)
+    if path.end_with?("/")
+      file = File.join(full, "index.html") if File.file?(File.join(full, "index.html"))
+    elsif File.file?(File.join(full, "index.html"))
+      res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect, "#{path}/")
+    end
+  elsif File.file?(full)
+    if full.end_with?("/index.html")
+      res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect, path.delete_suffix("index.html"))
+    elsif full.end_with?(".html")
+      res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect, path.delete_suffix(".html"))
+    else
+      file = full
+    end
+  elsif File.file?("#{full}.html")
+    file = "#{full}.html"
+  end
+  file = nil if file && ignored.call(file.delete_prefix("#{dir}/"))
+
+  next if res.status.between?(300, 399)
+  if file
+    res.status = 200
+    res.content_type = WEBrick::HTTPUtils.mime_type(file, WEBrick::HTTPUtils::DefaultMimeTypes.merge("xml" => "application/xml", "svg" => "image/svg+xml", "woff2" => "font/woff2"))
+    res.body = File.binread(file)
+  else
+    res.status = 404
+    res.content_type = "text/html"
+    nf = File.join(dir, "404.html")
+    res.body = File.file?(nf) ? File.binread(nf) : "404 Not Found"
+  end
+  res["Cache-Control"] = "no-store"
+end
+
+trap("INT") { server.shutdown }
+trap("TERM") { server.shutdown }
+puts "Serving #{dir.delete_prefix("#{root}/")} at http://localhost:#{port}/"
+puts "Post preview: http://localhost:#{port}/posts/#{slug}/" if slug
+server.start

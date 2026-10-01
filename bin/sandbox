@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# Isolated Docker sandbox for running Claude Code against this repo only.
+# Usage: bin/sandbox [start|shell|attach|logs|stop|rm|status]
+#   (no args)  same as start: attach if running, start-then-attach otherwise
+#   shell      throwaway interactive bash in the same sandbox (run `claude` yourself)
+#   attach     attach to the already-running session (fails if not running)
+#   logs       tail container output without attaching (safe to Ctrl-C)
+#   stop       stop the running session
+#   rm         remove the stopped container (keeps the credentials/cache volumes)
+#   status     print the container's current state
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+IMAGE_NAME="grant-ps-blog-sandbox"
+CONTAINER_NAME="grant-ps-blog-sandbox"
+CLAUDE_VOLUME="grant-ps-blog-sandbox-claude"
+CACHE_VOLUME="grant-ps-blog-sandbox-cache"
+ENV_FILE="$REPO_ROOT/.env"
+DOCKERFILE_DIR="$REPO_ROOT/.devcontainer"
+
+container_state() {
+  local out
+  if ! out="$(docker inspect -f '{{.State.Status}}' "$CONTAINER_NAME" 2>/dev/null)"; then
+    echo "absent"
+    return
+  fi
+  echo "$out"
+}
+
+# Docker's default bridge network can end up broken on this machine (observed:
+# a VPN's netfilter rules conflicting with Docker's bridge NAT/forwarding,
+# breaking container DNS entirely). Building and running with the host's own
+# network namespace sidesteps the bridge/NAT path altogether, so it works
+# whether or not that conflict ever gets fixed at the host level.
+build_image() {
+  echo "Building sandbox image (first run, or image missing)..."
+  docker build --network=host -t "$IMAGE_NAME" "$DOCKERFILE_DIR"
+}
+
+# Fills RUN_ARGS with the options shared by the long-lived Claude session and
+# the throwaway shell: same mounts, volumes, network, env and ssh-agent.
+build_run_args() {
+  if ! docker image inspect "$IMAGE_NAME" >/dev/null 2>&1; then
+    build_image
+  fi
+
+  local ssh_mount_args=()
+  if [[ -n "${SSH_AUTH_SOCK:-}" && -S "${SSH_AUTH_SOCK:-}" ]]; then
+    ssh_mount_args=(-v "${SSH_AUTH_SOCK}:/ssh-agent.sock" -e SSH_AUTH_SOCK=/ssh-agent.sock)
+  else
+    echo "Warning: no ssh-agent detected (SSH_AUTH_SOCK unset or not a socket)." >&2
+    echo "  git push/pull over SSH won't work until you run ssh-agent and ssh-add a key." >&2
+  fi
+
+  local env_file_args=()
+  if [[ -f "$ENV_FILE" ]]; then
+    env_file_args=(--env-file "$ENV_FILE")
+  else
+    echo "Warning: no .env file found at $ENV_FILE; gh CLI won't be authenticated." >&2
+    echo "  Copy .env.example to .env and fill in GH_TOKEN if you need gh." >&2
+  fi
+
+  RUN_ARGS=(
+    --network host
+    -e SANDBOX_UID="$(id -u)"
+    -e SANDBOX_GID="$(id -g)"
+    -e BUNDLE_PATH=/home/sandbox/.cache/bundle
+    "${ssh_mount_args[@]}"
+    "${env_file_args[@]}"
+    -v "$REPO_ROOT:/workspace"
+    -v "$CLAUDE_VOLUME:/home/sandbox/.claude"
+    -v "$CACHE_VOLUME:/home/sandbox/.cache"
+    -w /workspace
+  )
+}
+
+create_and_start() {
+  build_run_args
+  echo "Creating sandbox container..."
+  docker run -d -it \
+    --name "$CONTAINER_NAME" \
+    --restart unless-stopped \
+    "${RUN_ARGS[@]}" \
+    "$IMAGE_NAME" >/dev/null
+}
+
+run_shell() {
+  build_run_args
+  docker run -it --rm \
+    --name "$CONTAINER_NAME-shell-$$" \
+    "${RUN_ARGS[@]}" \
+    "$IMAGE_NAME" bash
+}
+
+start_container() {
+  local state
+  state="$(container_state)"
+
+  case "$state" in
+    running)
+      return 0
+      ;;
+    exited|created)
+      echo "Starting existing sandbox container..."
+      docker start "$CONTAINER_NAME" >/dev/null
+      ;;
+    absent)
+      create_and_start
+      ;;
+    *)
+      echo "Sandbox container is in unexpected state '$state'. Run 'bin/sandbox rm' then retry." >&2
+      exit 1
+      ;;
+  esac
+}
+
+attach_container() {
+  echo "Attached to sandbox. Detach with Ctrl-P Ctrl-Q (do NOT use Ctrl-C, it can exit the session)."
+  docker attach --detach-keys="ctrl-p,ctrl-q" "$CONTAINER_NAME"
+}
+
+cmd="${1:-}"
+
+case "$cmd" in
+  ""|start)
+    start_container
+    attach_container
+    ;;
+  shell)
+    run_shell
+    ;;
+  attach)
+    if [[ "$(container_state)" != "running" ]]; then
+      echo "Sandbox isn't running. Run 'bin/sandbox' to start it." >&2
+      exit 1
+    fi
+    attach_container
+    ;;
+  logs)
+    docker logs -f "$CONTAINER_NAME"
+    ;;
+  stop)
+    docker stop "$CONTAINER_NAME"
+    ;;
+  rm)
+    docker rm -f "$CONTAINER_NAME" 2>/dev/null || true
+    ;;
+  status)
+    echo "Container: $(container_state)"
+    ;;
+  *)
+    echo "Usage: bin/sandbox [start|shell|attach|logs|stop|rm|status]" >&2
+    exit 1
+    ;;
+esac

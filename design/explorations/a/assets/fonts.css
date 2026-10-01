@@ -1,0 +1,15 @@
+/* Self-hosted, latin subset only. All fonts SIL Open Font License, from Google Fonts. */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(fonts/newsreader-italic-400-700.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(fonts/newsreader-normal-400-700.woff2) format('woff2');
+}

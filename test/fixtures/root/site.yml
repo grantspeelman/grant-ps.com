@@ -1,0 +1,8 @@
+title: "Fixture Site"
+base_url: "https://grant-ps.com"
+author: "Fixture Author"
+repo_url: "https://github.com/grantspeelman/grant-ps.com"
+source_url_template: "https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/%{slug}/index.md"
+analytics_token: ""
+default_og_image: "/assets/og-default.png"
+writing_elsewhere: []

@@ -1,0 +1,8 @@
+/* Per-post flare: a "time budget" dial beside the 3 hour target. Decorative; the post reads fine without it. */
+.budget { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1.25rem; background: var(--coral); border: 2px solid var(--ink); border-radius: 1.25rem; box-shadow: 6px 6px 0 var(--ink); padding: 1.1rem 1.4rem; margin-top: 1.6em; }
+.budget svg { width: 6.5rem; height: 6.5rem; display: block; }
+.budget .track { fill: none; stroke: rgba(18, 18, 18, .18); stroke-width: 10; }
+.budget .fill { fill: none; stroke: var(--ink); stroke-width: 10; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.budget .hand { stroke: var(--lemon); stroke-width: 4; stroke-linecap: round; transform-origin: 50% 50%; }
+.budget .read { font-family: var(--display); font-weight: 800; font-variation-settings: "opsz" 96; font-size: clamp(2.6rem, 2rem + 3vw, 3.8rem); line-height: .9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.budget .cap { font-weight: 600; font-size: .9rem; margin-top: .3rem; }

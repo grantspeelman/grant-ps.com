@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+# Build site/feed.xml and site/sitemap.xml from the posts' markdown.
+#   bin/meta           write the files
+#   bin/meta --check   exit 1 if the committed files are out of date
+require "optparse"
+require_relative "../lib/blog"
+
+check = false
+root = File.expand_path("..", __dir__)
+OptionParser.new do |o|
+  o.banner = "Usage: bin/meta [--check] [--root DIR]"
+  o.on("--check", "Verify only; do not write") { check = true }
+  o.on("--root DIR", "Repo root (default: this repo)") { |d| root = d }
+end.parse!
+
+site = Blog::Site.new(root)
+invalid = site.post_slugs.filter_map do |slug|
+  errs = site.post(slug).errors
+  "  #{slug}: #{errs.join('; ')}" if errs.any?
+rescue Blog::FrontmatterError => e
+  "  #{slug}: #{e.message}"
+end
+abort "bin/meta: invalid frontmatter, fix before building:\n#{invalid.join("\n")}" if invalid.any?
+
+stale = []
+Blog::Meta.new(site).files.each do |name, content|
+  path = File.join(site.site_dir, name)
+  current = File.exist?(path) ? File.read(path) : nil
+  next if current == content
+  if check
+    stale << "site/#{name}"
+  else
+    File.write(path, content)
+    puts "wrote site/#{name}"
+  end
+end
+
+if check
+  abort "bin/meta --check: out of date: #{stale.join(', ')}. Run bin/meta." if stale.any?
+  puts "bin/meta --check: feed.xml and sitemap.xml are up to date"
+elsif stale.empty?
+  puts "bin/meta: feed.xml and sitemap.xml already up to date"
+end

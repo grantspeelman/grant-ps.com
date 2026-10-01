@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Install gems and browser-check tooling, and wire the git hooks. Safe to re-run.
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+bundle install
+# Browser checks (bin/check-pages): dev only, never deployed. Optional if Node is missing.
+if command -v npm >/dev/null 2>&1; then
+  npm install --no-fund --no-audit
+  # Download a browser only if Playwright has none (the sandbox image ships one, read-only).
+  if ! node -e 'process.exit(require("fs").existsSync(require("playwright").chromium.executablePath()) ? 0 : 1)' 2>/dev/null; then
+    npx playwright install chromium
+  fi
+else
+  echo "Warning: npm not found; bin/check-pages will not run until Node is installed." >&2
+fi
+git config core.hooksPath .githooks
+chmod +x .githooks/* bin/*
+echo "Setup done. Hooks path: $(git config core.hooksPath)"

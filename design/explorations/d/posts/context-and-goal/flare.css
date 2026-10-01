@@ -1,0 +1,11 @@
+/* Per-post flare: a "time budget" dial beside the 3 hour target. Decorative and hidden from screen readers;
+   the post reads the same without it. Without JS or with reduced motion it shows the full 3:00. */
+.budget { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1.25rem; background: var(--lemon); color: var(--night); border: 2px solid var(--night); border-radius: 1.1rem; box-shadow: 7px 7px 0 var(--cobalt); padding: 1rem 1.4rem; margin: 1.8em 0 .4em; }
+.budget svg { width: 6rem; height: 6rem; display: block; }
+.budget .track { fill: none; stroke: rgba(18, 18, 18, .15); stroke-width: 10; }
+.budget .fill { fill: none; stroke: var(--cobalt); stroke-width: 10; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.budget .hand { stroke: var(--coral); stroke-width: 5; stroke-linecap: round; transform-origin: 50% 50%; }
+.budget .read { font-family: var(--display); font-weight: 800; font-size: clamp(2.6rem, 2rem + 3vw, 3.6rem); line-height: .9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.budget .cap { font-family: var(--mono); font-size: .8rem; margin-top: .35rem; }
+@media (max-width: 24rem) { .budget { grid-template-columns: 1fr; justify-items: start; } }
+@media (forced-colors: active) { .budget { border: 2px solid CanvasText; } }

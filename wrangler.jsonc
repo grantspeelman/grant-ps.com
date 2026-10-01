@@ -1,0 +1,13 @@
+// Cloudflare Workers config: an assets-only Worker (no script) that serves the committed site/ folder.
+// No build step. Workers Builds runs `npx wrangler deploy` on push to main.
+{
+  "name": "grant-ps-com",
+  "compatibility_date": "2026-09-27",
+  "assets": {
+    "directory": "./site",
+    // /posts/<slug>/ serves posts/<slug>/index.html; /404.html is served as /404
+    "html_handling": "auto-trailing-slash",
+    // Unknown URLs get site/404.html with a 404 status
+    "not_found_handling": "404-page"
+  }
+}

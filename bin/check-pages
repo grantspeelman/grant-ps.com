@@ -1,0 +1,110 @@
+#!/usr/bin/env node
+// Browser checks for generated pages: the things bin/guard cannot see because it only reads words.
+// For each page, in light and dark mode:
+//   - axe-core accessibility audit (WCAG 2.2 A and AA, plus axe best practice)
+//   - no page-level sideways scrolling at 320, 390 and 1280px wide
+//   - no failed requests (missing CSS, fonts, images) and no JS errors
+// It also saves phone and desktop screenshots to tmp/check-pages/ for a human (or Claude) to look at.
+//
+//   bin/check-pages              home, 404 and every post
+//   bin/check-pages <slug>...    home, 404 and these posts
+//   bin/check-pages --og         re-render site/assets/og-default.png from design/og-default.html
+//
+// Exits non-zero if any check fails. Needs `npm install` (bin/setup does it).
+const { spawn } = require("child_process");
+const fs = require("fs");
+const path = require("path");
+
+const root = path.resolve(__dirname, "..");
+let chromium, axeSource;
+try {
+  ({ chromium } = require("playwright"));
+  axeSource = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
+} catch (e) {
+  console.error("bin/check-pages: missing dev dependencies. Run `npm install` (or bin/setup).\n" + e.message);
+  process.exit(2);
+}
+
+const args = process.argv.slice(2);
+const port = 4400 + Math.floor(Math.random() * 500);
+const base = `http://localhost:${port}`;
+const outDir = path.join(root, "tmp", "check-pages");
+const WIDTHS = [320, 390, 1280];
+const SHOT_WIDTHS = [390, 1280];
+const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"];
+
+async function renderOg() {
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
+  await page.goto("file://" + path.join(root, "design", "og-default.html"));
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({ path: path.join(root, "site", "assets", "og-default.png") });
+  await browser.close();
+  console.log("wrote site/assets/og-default.png");
+}
+
+function pagesToCheck() {
+  const postsDir = path.join(root, "site", "posts");
+  const all = fs.existsSync(postsDir) ? fs.readdirSync(postsDir).filter(s => fs.existsSync(path.join(postsDir, s, "index.html"))) : [];
+  const slugs = args.length ? args : all;
+  for (const s of slugs) if (!all.includes(s)) { console.error(`bin/check-pages: no page at site/posts/${s}/index.html`); process.exit(2); }
+  return [["home", "/"], ["404", "/404"], ...slugs.map(s => [s, `/posts/${s}/`])];
+}
+
+async function waitForServer() {
+  for (let i = 0; i < 50; i++) {
+    try { if ((await fetch(base + "/")).ok) return; } catch {}
+    await new Promise(r => setTimeout(r, 200));
+  }
+  throw new Error("preview server did not start");
+}
+
+async function check() {
+  const pages = pagesToCheck();
+  fs.rmSync(outDir, { recursive: true, force: true });
+  fs.mkdirSync(outDir, { recursive: true });
+  const server = spawn(path.join(root, "bin", "preview"), ["--port", String(port)], { cwd: root, stdio: ["ignore", "ignore", "inherit"] });
+  const failures = [];
+  const fail = (msg) => { failures.push(msg); console.log("  ✗ " + msg); };
+  try {
+    await waitForServer();
+    const browser = await chromium.launch();
+    for (const [name, url] of pages) {
+      console.log(`${name} (${url})`);
+      for (const scheme of ["light", "dark"]) {
+        for (const width of WIDTHS) {
+          const ctx = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: scheme, reducedMotion: "reduce" });
+          const page = await ctx.newPage();
+          const problems = [];
+          page.on("pageerror", e => problems.push("JS error: " + e.message));
+          page.on("response", r => { if (r.status() >= 400 && !r.url().endsWith(url) && !r.url().endsWith("/favicon.ico")) problems.push(`${r.status()} ${r.url().replace(base, "")}`); });
+          const res = await page.goto(base + url, { waitUntil: "networkidle" });
+          if (name !== "404" && res.status() !== 200) problems.push(`page returned ${res.status()}`);
+          await page.evaluate(() => document.fonts.ready);
+          problems.forEach(p => fail(`${scheme} ${width}px: ${p}`));
+          if (await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth))
+            fail(`${scheme} ${width}px: page scrolls sideways (content wider than the screen)`);
+          if (SHOT_WIDTHS.includes(width))
+            await page.screenshot({ path: path.join(outDir, `${name}-${scheme}-${width}.png`), fullPage: true });
+          if (width === 1280) {
+            await page.addScriptTag({ content: axeSource });
+            const r = await page.evaluate(tags => axe.run(document, { runOnly: tags, rules: { "css-orientation-lock": { enabled: false } } }), AXE_TAGS);
+            for (const v of r.violations)
+              fail(`${scheme} axe ${v.id} (${v.impact}): ${v.help}\n      at ${v.nodes.map(n => n.target.join(" ")).slice(0, 5).join(" | ")}`);
+            const review = r.incomplete.filter(v => v.id === "color-contrast").flatMap(v => v.nodes).length;
+            if (review) console.log(`  · ${scheme}: axe could not measure contrast for ${review} element(s) over the grid background; the palette in design/BRIEF.md is pre-checked, so this is expected unless you added colours`);
+          }
+          await ctx.close();
+        }
+      }
+    }
+    await browser.close();
+  } finally {
+    server.kill();
+  }
+  console.log(`\nScreenshots: tmp/check-pages/ (phone 390px and desktop 1280px, light and dark). Look at them.`);
+  if (failures.length) { console.log(`\n${failures.length} problem(s). Fix the HTML or CSS and re-run.`); process.exit(1); }
+  console.log("All page checks passed.");
+}
+
+(args[0] === "--og" ? renderOg() : check()).catch(e => { console.error(e); process.exit(2); });
