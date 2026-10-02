@@ -2,105 +2,105 @@
 title: "I built my own blog with an AI agent"
 slug: building-my-own-blog-with-ai
 date: 2026-10-01
-description: "A plan, a three hour time box and Claude Code: every step it took to get grant-ps.com live, and why I think more of us will start building our own software."
+description: "How Claude Code and a written plan got grant-ps.com from an empty repo to live, step by step, and why I think more people will start building their own software."
 tags: [ai, blogging, cloudflare, ruby]
 ---
 
-A plan, a three hour time box, and an AI agent doing the typing. Everything it took to get this site live.
+I gave an AI agent a written plan and a three hour budget. This is everything it took to get this site live.
 
-My writing has lived on other people's platforms: Medium, under NEXL Engineering, and dev.to. They work fine. They are also not mine. The URL, the design, the way a post gets from my head to the page, all of it belongs to somebody else.
+Until now my writing has lived on Medium, in NEXL Engineering, and on dev.to. Both work fine, but I don't control the URL or the design, and I don't control how a post gets from markdown to a page.
 
-So I moved it to my own domain. But rather than pick a platform, I made it an experiment. Can an AI agent stand up a personal blog, with a publishing workflow I actually trust, in an afternoon?
+So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually trust?
 
-This post is the answer. It is also the first post on the blog it describes.
+This post is the first one on the blog it describes.
 
-## Plan first, then hand over the keys
+## Writing the plan first
 
-Before the agent wrote a line of code, I wrote `PLAN.md`. Seventeen settled decisions, each with what it was chosen over. A three hour budget. Eight phases, one checkpoint where the agent had to stop and wait for me, and a list of things it was not allowed to do.
+Before the agent wrote any code, I wrote `PLAN.md`. It has seventeen settled decisions, each with the option I rejected next to it. It sets a three hour budget, splits the work into eight phases, and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.
 
 The core idea fits in four lines:
 
 - Markdown is the source of truth for every post.
-- The agent writes each page's HTML by hand from that markdown, following a design brief. No static site generator, no templates.
-- Boring, deterministic Ruby does everything that must be exact: the RSS feed, the sitemap, and a fidelity guard.
-- The deploy is dumb. Cloudflare serves the committed files. No build step, no API keys.
+- The agent writes each page's HTML by hand from that markdown, following a design brief. There is no static site generator and no template.
+- Plain Ruby scripts build everything that must be exact, which is the RSS feed, the sitemap and a fidelity guard.
+- Cloudflare serves the committed files as they are. The deploy has no build step and no API keys.
 
-The second point is the unusual one. Letting an agent hand write every page means each post can get its own touch, and the whole site can be redesigned later by regenerating every page from the markdown. Nothing is locked into a theme.
+The second point is the unusual one. Because the agent writes every page by hand, each post can get its own design touches. I can also redesign the whole site later by having the agent regenerate every page from the markdown, since no theme ties the pages together.
 
-It also means trusting an agent with my words. That is where the third point comes in.
+It also means I have to trust an agent with my words, which is why the guard exists.
 
-## Instructions are advisory. A guard is not.
+## A guard for my words
 
-The plan tells the agent never to alter, add to, reorder or omit my prose. That is an instruction, and I have written before about how far instructions get you.
+The plan tells the agent never to alter, add to, reorder or omit my prose. I have written before about how often agents forget instructions like that, so I didn't rely on it.
 
-So there is a fidelity guard. It renders the markdown, pulls the post body out of the agent's HTML, and compares the two block by block: headings, paragraphs, list items, code lines. Whitespace may change. Nothing else may. A curly quote turned straight fails. A dropped code line fails. A reworded sentence fails, with a diff that tells the agent exactly what to fix.
+The fidelity guard renders the markdown, pulls the post body out of the agent's HTML, and compares the two block by block. It checks headings, paragraphs, list items and every line of code. Whitespace may change and nothing else may. If a curly quote turns straight or a code line goes missing, the guard fails and prints a diff that shows the agent what to fix.
 
-It runs as a pre-commit hook, so a bad page cannot be committed, by me or by the agent. In the end to end test it blocked a commit where a single word had changed on the page.
+The guard runs in a pre-commit hook, so neither the agent nor I can commit a page that changes my words. In the end to end test, it blocked a commit where one word on the page differed from the markdown.
 
-The same idea later spread to the home page intro. A redesign rewrites the home page, so the intro got its own markdown file and the guard checks that too.
+Later the home page intro got the same treatment. A redesign rewrites the home page, so the intro now has its own markdown file and the guard checks it too.
 
 ## Three designs, then a fourth
 
-The checkpoint was the design. The agent built three directions, each as a home page and a sample post: an editorial serif, an engineering notebook, and something loud in cobalt, coral and lemon.
+The checkpoint was the design. The agent built three directions, each with a home page and a sample post. One was an editorial serif, one was an engineering notebook, and one was loud, in cobalt, coral and lemon.
 
-I asked for a fourth that combined the notebook with the loud one. Then I picked the notebook anyway, on two conditions: mobile first, and proper web accessibility. The agent rewrote the stylesheet mobile first and worked through the accessibility details one by one. A blinking cursor that stops after four blinks. Decorative shell prompts hidden from screen readers. A focus ring you can see on every surface.
+I asked for a fourth that combined the notebook with the loud one, then picked the original notebook anyway. I had two conditions, mobile first and proper web accessibility. The agent rewrote the stylesheet mobile first and worked through the accessibility details one at a time. The blinking cursor now stops after four blinks, and screen readers skip the decorative shell prompts.
 
 ## What the guard could not see
 
 This was the most useful lesson of the build.
 
-The guard proves the words are right. It says nothing about whether the page reads right. Screenshots at phone and desktop width found eight bugs that no text check would ever catch. A few of them:
+The guard proves the words are right, but it can't tell whether the page reads well. Screenshots at phone and desktop width found eight bugs that no text check would catch. Four of them:
 
-- Paragraphs with no gap between them, because one CSS rule outranked another on specificity.
-- My name overflowing the screen on a phone.
-- A font missing the glyph for a non-breaking hyphen.
-- Code ligatures merging `#{` into a single glyph, so the code on screen was not quite the code in the post.
+- Paragraphs had no gap between them, because one CSS rule outranked another on specificity.
+- My name overflowed the screen on a phone.
+- The font had no glyph for a non-breaking hyphen.
+- Code ligatures merged `#{` into a single glyph, so the code on screen didn't match the code in the post.
 
-So the agent built itself a second checker, `bin/check-pages`: accessibility checks with axe-core in light and dark mode, sideways scroll checks at three widths, and screenshots it has to look at before handing a page over. It was not in the plan. It is now the step I would least want to lose.
+So the agent wrote a second checker, `bin/check-pages`. It runs axe-core accessibility checks in light and dark mode, checks for sideways scrolling at three widths, and saves screenshots that the agent has to look at before it hands me a page. The plan never asked for it, and I'd now keep it over almost anything else in the repo.
 
-The agent's own note at the end of its build log: build the screenshot checker in phase 2, not phase 5. I agree. It is the same lesson as [my tooling post](https://dev.to/grantps/tooling-every-ai-software-harness-should-have-4512). A tool only counts if the agent sees the output.
+In its build log the agent wrote that it should have built the screenshot checker in phase 2 instead of phase 5. I agree. I made the same point in [my tooling post](https://dev.to/grantps/tooling-every-ai-software-harness-should-have-4512), that a tool only helps if the agent reads its output.
 
 ## The numbers
 
-The build took 2 hours 35 minutes of wall time, inside the three hour budget, including the time spent waiting for me to pick a design. It ended with 42 passing tests, a pre-commit hook proven against every failure case in the plan, two Claude Code skills, `/publish` and `/regenerate-site`, and a site ready to deploy that nobody could see yet.
+The build took 2 hours 35 minutes of wall time, including the time the agent spent waiting for me to pick a design. That left 25 minutes of the budget. At the end the repo had 42 passing tests and a pre-commit hook proven against every failure case in the plan. It also had two Claude Code skills, `/publish` and `/regenerate-site`, and a finished site that nobody could see yet.
 
 ## Getting it live
 
-Then came the part the agent could not do alone. Clicking through dashboards is still my job. So I did it one step at a time, with the agent telling me what to do next and checking each step from its side before moving on.
+The agent can't click through the Cloudflare dashboard for me, so I did that part myself. We went one step at a time. The agent told me what to do next and checked each step from its side before we moved on.
 
-1. Bought grant-ps.com through Cloudflare Registrar.
-2. Created the Worker with Workers Builds, pointed at the GitHub repo. No build command, deploy command `npx wrangler deploy`. The first deploy to `workers.dev` went green in under a minute.
-3. The build log showed Cloudflare installing my Ruby gems and npm packages before every deploy. The deploy needs neither, so we turned that off with a `SKIP_DEPENDENCY_INSTALL` build variable. I put it in the runtime variables first. The agent spotted the wrong section from my screenshot.
-4. Attached the custom domain and a www to apex redirect. The agent tested every combination of http, https and www, and found `http://www.grant-ps.com` returning a 522, because the redirect rule only matched https. One switch, Always Use HTTPS, fixed it.
-5. Turned on Cloudflare Web Analytics. The agent recommended a manual token. I asked to try automatic injection first, because it was easier. It worked within a minute, with no change to the repo.
-6. Added links to my writing elsewhere, and wrote the intro.
+1. I bought grant-ps.com through Cloudflare Registrar.
+2. I created the Worker with Workers Builds and connected it to the GitHub repo, with no build command and `npx wrangler deploy` as the deploy command. The first deploy to `workers.dev` finished in under a minute.
+3. The build log showed Cloudflare installing my Ruby gems and npm packages before every deploy. The deploy needs neither, so we turned that off with a `SKIP_DEPENDENCY_INSTALL` build variable. I added it to the runtime variables first, and the agent saw from my screenshot that it was in the wrong section.
+4. I attached the custom domain and added a redirect from www to the bare domain. The agent tried every combination of http, https and www, and found that `http://www.grant-ps.com` returned a 522 error because the redirect rule only matched https. Turning on Always Use HTTPS fixed it.
+5. I turned on Cloudflare Web Analytics. The agent recommended a manual token, but I wanted to try automatic injection first because it was less work. The beacon appeared on the live pages within a minute, and the repo didn't need to change.
+6. I added links to my writing elsewhere and wrote the intro.
 
-From the first deploy to the intro being live took a little over an hour.
+The intro went live a little over an hour after the first deploy.
 
-## Off the shelf is losing its edge
+## Why I think more people will build their own
 
-Here is the thought that kept coming back while I did this.
+One thought kept coming back while I did this.
 
-I could have used Medium, Ghost, WordPress, or a static site generator with a theme. Any of them would have worked. Every one of them would have meant accepting someone else's idea of what a blog is.
+I could have used Medium, Ghost, WordPress, or a static site generator with a theme. Any of them would have worked, and each would have made me accept someone else's idea of what a blog is.
 
-What I got instead fits exactly how I want to work. My words in markdown, checked by a guard I can read. Pages that can be redesigned without touching a single post. A deploy with no moving parts. None of that is on a product roadmap anywhere, because nobody else needs exactly this combination. I did.
+What I have instead matches how I want to work. I write in markdown, and a guard I can read checks every page against it. The agent can redesign every page without touching a post, and the deploy just copies files. No product will add that combination to its roadmap, because I'm probably the only person who wants exactly this.
 
-Building it used to be the expensive part. You weighed weeks of evenings against a monthly subscription, and the subscription won. That trade has changed. The cost of something bespoke is now an afternoon of agent time and a plan worth following.
+Building your own used to cost weeks of evenings, and next to that a monthly subscription looked cheap. Now it costs an afternoon of agent time and a plan worth following, and I think that changes the answer for a lot of people.
 
-I think more and more people are going to make that trade. Not for everything. Off the shelf will still win where the problem is genuinely shared and getting it wrong is expensive. But for the tools that sit closest to how you work, building your own is starting to beat adapting to someone else's. The default is going to flip.
+I expect more and more people to build their own software instead of buying off the shelf. I don't think that holds for everything. When many people share the same problem and mistakes are expensive, a product built and maintained by a team will still win. For the tools closest to how you work every day, I think building your own will become the default.
 
 ## What this costs
 
-Worth being straight about the trade offs.
+Building your own has real costs, and I don't want to skip them.
 
-You own all of it. There is no vendor to fix a bug, patch a security hole or keep the lights on. Here that is small on purpose: static files, no server code, no database. A bigger system carries a bigger bill.
+I own all of it. If something breaks or needs a security fix, no vendor will do it for me. I kept that small on purpose, since the site is static files with no server code and no database. A bigger system would cost a lot more to look after.
 
-The plan did a lot of the work. The agent was fast because the decisions were already made. Skipping that step would not have saved time. It would have moved the thinking into the middle of the build, where it costs far more.
+The plan did a lot of the work. The agent moved fast because I had already made the decisions. Without the plan, I would have made those same decisions halfway through the build, when each one costs more to change.
 
-And somebody still has to look. The agent caught most of its own mistakes, but only because it was told to screenshot and read its own pages. The checks are the reason this is trustworthy, not the agent.
+Someone still has to look at the result. The agent caught most of its own mistakes, but only because the publishing skill makes it screenshot and read its own pages. I trust the site because of the guard and the page checks. I wouldn't trust the agent's word on its own.
 
 ## Where this leaves things
 
-The site is live at grant-ps.com, the source is public at [github.com/grantspeelman/grant-ps.com](https://github.com/grantspeelman/grant-ps.com), and every post links to the markdown it was generated from. Next is syndication: dev.to will import posts from the RSS feed, with this site as the canonical home. After that, an editor app, which will be post number two.
+The site is live at grant-ps.com, and the source is public at [github.com/grantspeelman/grant-ps.com](https://github.com/grantspeelman/grant-ps.com). Every post links to the markdown it was generated from. Next, dev.to will import posts from the RSS feed and point back to this site as the original. After that I want to build an editor app, and that will be the second post.
 
-If you have been putting off building your own version of something because the off the shelf one was close enough, it might be worth another look. Happy coding.
+If you've put off building your own version of something because an off the shelf one was close enough, it might be worth another look. Happy coding.
