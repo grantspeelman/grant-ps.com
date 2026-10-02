@@ -1,0 +1,41 @@
+/* Flare for "I built my own blog with an AI agent". CSS only, no motion, palette tokens only.
+   Everything here is decorative: the guard panel and the budget bar are aria-hidden figures whose
+   facts are in the text beside them, and the checklist only restyles the markers of a list. */
+
+/* 1. A guard run: real bin/guard output, trimmed, in the same terminal panel as code blocks. */
+.guard-run { margin: 1.5em 0 0; }
+.guard-run .term {
+  font-family: var(--mono); font-size: .78rem; line-height: 1.7;
+  background: var(--term-bg); color: var(--term-ink);
+  padding: 1rem; margin-inline: -1rem;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  font-variant-ligatures: none;
+}
+@media (min-width: 40rem) { .guard-run .term { margin-inline: 0; padding-inline: 1.2rem; border-radius: 6px; } }
+.guard-run .ps { color: var(--term-dim); }
+.guard-run .dollar { color: var(--term-key); }
+.guard-run .bad { font-weight: 700; }
+.guard-run .was { color: var(--term-str); text-decoration: line-through; text-decoration-thickness: 1px; }
+.guard-run .now { color: var(--term-key); }
+.guard-run figcaption, .budget figcaption { font-family: var(--mono); font-size: .75rem; color: var(--muted); margin-top: .6rem; }
+
+/* 2. The time budget: 2h 35m of 3h, as a bar. 155 / 180 minutes. */
+.budget { margin: 1.5em 0 0; }
+.budget-track { display: flex; height: .9rem; border: 1px solid var(--ink); border-radius: 3px; overflow: hidden; background: var(--paper); }
+.budget-used { flex: 0 0 86.11%; background: var(--accent); }
+.budget-spare { flex: 1; background: repeating-linear-gradient(135deg, transparent 0 4px, var(--rule) 4px 6px); border-left: 1px solid var(--ink); }
+.budget figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; }
+
+/* 3. Getting it live, as a ticked-off checklist. The [x] is decorative (empty alt text). */
+.prose ol.golive { list-style: none; padding-left: 0; }
+.prose ol.golive > li { position: relative; padding-left: 2.6rem; }
+.prose ol.golive > li::before {
+  content: "[x]" / "";
+  position: absolute; left: 0; top: 0;
+  font-family: var(--mono); font-size: .9em; color: var(--accent);
+}
+
+@media (forced-colors: active) {
+  .budget-used { background: CanvasText; }
+  .guard-run .term { border: 1px solid CanvasText; }
+}

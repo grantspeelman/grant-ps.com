@@ -21,6 +21,7 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css">
 <script src="/assets/notebook.js" defer></script>
+<link rel="stylesheet" href="flare.css">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -81,6 +82,19 @@
 <h2 id="a-guard-for-my-words">A guard for my words<a class="anchor" href="#a-guard-for-my-words" aria-label="Link to this section"></a></h2>
 <p>The plan tells the agent never to alter, add to, reorder or omit my prose. I have written before about how often agents forget instructions like that, so I didn't rely on it.</p>
 <p>The fidelity guard renders the markdown, pulls the post body out of the agent's HTML, and compares the two block by block. It checks headings, paragraphs, list items and every line of code. Whitespace may change and nothing else may. If a curly quote turns straight or a code line goes missing, the guard fails and prints a diff that shows the agent what to fix.</p>
+<figure class="guard-run" data-flare aria-hidden="true">
+  <div class="term"><span class="ps"><span class="dollar">$</span> bin/guard building-my-own-blog-with-ai</span>
+<span class="bad">✗ building-my-own-blog-with-ai</span>
+  post body text does not match index.md (block 16 of 55 expected)
+  first difference at character 217:
+    markdown <span class="was">"may change and nothing else may."</span>
+    page     <span class="now">"may change and little else may."</span>
+  Fix the HTML so its text matches the markdown exactly.
+  Never edit index.md to match the page.
+<span class="ps"><span class="dollar">$</span> echo $?</span>
+1</div>
+  <figcaption>Real output, trimmed: the guard on a scratch copy of this page with one word changed.</figcaption>
+</figure>
 <p>The guard runs in a pre-commit hook, so neither the agent nor I can commit a page that changes my words. In the end to end test, it blocked a commit where one word on the page differed from the markdown.</p>
 <p>Later the home page intro got the same treatment. A redesign rewrites the home page, so the intro now has its own markdown file and the guard checks it too.</p>
 <h2 id="three-designs-then-a-fourth">Three designs, then a fourth<a class="anchor" href="#three-designs-then-a-fourth" aria-label="Link to this section"></a></h2>
@@ -99,9 +113,13 @@
 <p>In its build log the agent wrote that it should have built the screenshot checker in phase 2 instead of phase 5. I agree. I made the same point in <a href="https://dev.to/grantps/tooling-every-ai-software-harness-should-have-4512">my tooling post</a>, that a tool only helps if the agent reads its output.</p>
 <h2 id="the-numbers">The numbers<a class="anchor" href="#the-numbers" aria-label="Link to this section"></a></h2>
 <p>The build took 2 hours 35 minutes of wall time, including the time the agent spent waiting for me to pick a design. That left 25 minutes of the budget. At the end the repo had 42 passing tests and a pre-commit hook proven against every failure case in the plan. It also had two Claude Code skills, <code>/publish</code> and <code>/regenerate-site</code>, and a finished site that nobody could see yet.</p>
+<figure class="budget" data-flare aria-hidden="true">
+  <div class="budget-track"><span class="budget-used"></span><span class="budget-spare"></span></div>
+  <figcaption><span>2h 35m used</span><span>25m spare of a 3h budget</span></figcaption>
+</figure>
 <h2 id="getting-it-live">Getting it live<a class="anchor" href="#getting-it-live" aria-label="Link to this section"></a></h2>
 <p>The agent can't click through the Cloudflare dashboard for me, so I did that part myself. We went one step at a time. The agent told me what to do next and checked each step from its side before we moved on.</p>
-<ol>
+<ol class="golive">
 <li>I bought grant-ps.com through Cloudflare Registrar.</li>
 <li>I created the Worker with Workers Builds and connected it to the GitHub repo, with no build command and <code>npx wrangler deploy</code> as the deploy command. The first deploy to <code>workers.dev</code> finished in under a minute.</li>
 <li>The build log showed Cloudflare installing my Ruby gems and npm packages before every deploy. The deploy needs neither, so we turned that off with a <code>SKIP_DEPENDENCY_INSTALL</code> build variable. I added it to the runtime variables first, and the agent saw from my screenshot that it was in the wrong section.</li>
