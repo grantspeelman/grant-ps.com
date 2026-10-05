@@ -42,7 +42,7 @@
     <aside class="margin" aria-label="Post details">
       <dl>
         <dt>Logged</dt><dd><time datetime="2026-10-01">2026-10-01</time></dd>
-        <dt>Length</dt><dd>1614 words, 9 min</dd>
+        <dt>Length</dt><dd>1634 words, 9 min</dd>
         <dt>Tags</dt><dd><ul class="tags"><li>#ai</li><li>#blogging</li><li>#cloudflare</li><li>#ruby</li></ul></dd>
         <dt>Source</dt><dd><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/building-my-own-blog-with-ai/index.md">Read the markdown source</a></dd>
       </dl>
@@ -64,12 +64,14 @@
       </nav>
     </aside>
     <div class="prose" data-post-body>
+<p>It's a wonderful feeling to be able to dream up something and see it come to life within a few hours.
+I was about to write another blog post and realised that I can now have my own custom blog with minimum effort.</p>
 <p>I gave an AI agent a written plan and a three hour budget. This is everything it took to get this site live.</p>
-<p>Until now my writing has lived on Medium, in NEXL Engineering, and on dev.to. Both work fine, but I don't control the URL or the design, and I don't control how a post gets from markdown to a page.</p>
-<p>So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually trust?</p>
+<p>Until now my writing has lived on Medium, in NEXL Engineering, and more recently on dev.to. Both work fine, but I don't have absolute creative freedom over the URL, design or how the article appears on the page.</p>
+<p>So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually like?</p>
 <p>This post is the first one on the blog it describes.</p>
 <h2 id="writing-the-plan-first">Writing the plan first<a class="anchor" href="#writing-the-plan-first" aria-label="Link to this section"></a></h2>
-<p>Before the agent wrote any code, I wrote <code>PLAN.md</code>. It has seventeen settled decisions, each with the option I rejected next to it. It sets a three hour budget, splits the work into eight phases, and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.</p>
+<p>Before the agent wrote any code, I discussed with Claude how I wanted it to work and created a <code>PLAN.md</code>. I set a goal for myself to have something functioning within a few hours. I created the repo and discussed it further with Claude. The plan splits the work into eight phases and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.</p>
 <p>The core idea fits in four lines:</p>
 <ul>
 <li>Markdown is the source of truth for every post.</li>
@@ -138,7 +140,7 @@
 <p>Building your own has real costs, and I don't want to skip them.</p>
 <p>I own all of it. If something breaks or needs a security fix, no vendor will do it for me. I kept that small on purpose, since the site is static files with no server code and no database. A bigger system would cost a lot more to look after.</p>
 <p>The plan did a lot of the work. The agent moved fast because I had already made the decisions. Without the plan, I would have made those same decisions halfway through the build, when each one costs more to change.</p>
-<p>Someone still has to look at the result. The agent caught most of its own mistakes, but only because the publishing skill makes it screenshot and read its own pages. I trust the site because of the guard and the page checks. I wouldn't trust the agent's word on its own.</p>
+<p>I trust the site because of the guard and the page checks.</p>
 <h2 id="where-this-leaves-things">Where this leaves things<a class="anchor" href="#where-this-leaves-things" aria-label="Link to this section"></a></h2>
 <p>The site is live at grant-ps.com, and the source is public at <a href="https://github.com/grantspeelman/grant-ps.com">github.com/grantspeelman/grant-ps.com</a>. Every post links to the markdown it was generated from. Next, dev.to will import posts from the RSS feed and point back to this site as the original. After that I want to build an editor app, and that will be the second post.</p>
 <p>If you've put off building your own version of something because an off the shelf one was close enough, it might be worth another look. Happy coding.</p>
