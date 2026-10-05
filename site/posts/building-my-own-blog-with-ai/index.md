@@ -1,0 +1,97 @@
+---
+title: "I gave an AI agent three hours to build my blog"
+slug: building-my-own-blog-with-ai
+date: 2026-10-05
+description: "How Claude Code and a written plan got grant-ps.com from an empty repo to live, step by step, and why I think more people will start building their own software."
+tags: [ai, blogging, cloudflare, ruby]
+---
+
+I gave an AI agent a written plan and a three-hour budget. This is everything it took to get this site live.
+
+I was about to write another blog post and realised that I can now have my own custom blog with minimal effort. Until now my writing has lived on Medium, in NEXL Engineering, and more recently on dev.to. Both work fine, but I don't have absolute creative freedom over the URL, design or how the article appears on the page.
+
+So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually like?
+
+This post is the first one on the blog it describes.
+
+## Writing the plan first
+
+Before the agent wrote any code, I had Claude interview me with a grill-me skill until we agreed on how the blog should work. The result was `PLAN.md`: seventeen settled decisions, each chosen over the alternatives I turned down. That interview is the part of this build anyone can copy, because changing your mind during an interview costs nothing. The plan splits the work into eight phases and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.
+
+The core idea fits in four lines:
+
+- Markdown is the source of truth for every post.
+- The agent writes each page's HTML by hand from that markdown, following a design brief. There is no static site generator and no template.
+- Plain Ruby scripts build everything that must be exact, which is the RSS feed, the sitemap and a fidelity guard.
+- Cloudflare serves the committed files as they are. The deploy has no build step and no API keys.
+
+The second point is the unusual one. Because the agent writes every page by hand, each post can get its own design touches. I can also redesign the whole site later by having the agent regenerate every page from the markdown, since no theme ties the pages together.
+
+It also means I have to trust an agent with my words, which is why the guard exists.
+
+## A guard for my words
+
+The plan tells the agent never to alter, add to, reorder or omit my prose. I have written before about how often agents forget instructions like that, so I didn't rely on it.
+
+The fidelity guard renders the markdown, pulls the post body out of the agent's HTML, and compares the two block by block. It checks headings, paragraphs, list items and every line of code. Whitespace may change and nothing else may. If a curly quote turns straight or a code line goes missing, the guard fails and prints a diff that shows the agent what to fix.
+
+The guard runs in a pre-commit hook, so neither the agent nor I can commit a page that changes my words. In the end-to-end test, it blocked a commit where one word on the page differed from the markdown.
+
+Later the home page intro got the same treatment. A redesign rewrites the home page, so the intro now has its own markdown file and the guard checks it too.
+
+## Three designs, then a fourth
+
+The checkpoint was the design. The agent built three directions, each with a home page and a sample post. One was an editorial serif, one was an engineering notebook, and one was loud, in cobalt, coral and lemon.
+
+I asked for a fourth that combined the notebook with the loud one, then picked the original notebook anyway. I had two conditions, mobile first and proper web accessibility. The agent rewrote the stylesheet mobile first and worked through the accessibility details one at a time. The blinking cursor now stops after four blinks, and screen readers skip the decorative shell prompts.
+
+## What the guard could not see
+
+This was the most useful lesson of the build.
+
+The guard proves the words are right, but it can't tell whether the page reads well. Screenshots at phone and desktop width found eight bugs that no text check would catch. Four of them:
+
+- Paragraphs had no gap between them, because one CSS rule outranked another on specificity.
+- My name overflowed the screen on a phone.
+- The font had no glyph for a non-breaking hyphen.
+- Code ligatures merged `#{` into a single glyph, so the code on screen didn't match the code in the post.
+
+So the agent wrote a second checker, `bin/check-pages`. It runs axe-core accessibility checks in light and dark mode, checks for sideways scrolling at three widths, and saves screenshots that the agent has to look at before it hands me a page. The plan never asked for it, and I'd now keep it over almost anything else in the repo.
+
+In its build log the agent wrote that it should have built the screenshot checker in phase 2 instead of phase 5. I agree. I made the same point in [my tooling post](https://dev.to/grantps/tooling-every-ai-software-harness-should-have-4512), that a tool only helps if the agent reads its output.
+
+## The numbers
+
+The build took 2 hours 35 minutes of wall time, including the time the agent spent waiting for me to pick a design. That left 25 minutes of the budget. At the end the repo had 42 passing tests and a pre-commit hook proven against every failure case in the plan. It also had two Claude Code skills, `/publish` and `/regenerate-site`, and a finished site that nobody could see yet.
+
+## Getting it live
+
+I decided to set up Cloudflare myself, since it was simple enough to do by hand. The agent walked me through it and checked each step from its side.
+
+## Why I think more people will build their own
+
+One thought kept coming back while I did this.
+
+I could have used Medium, Ghost, WordPress, or a static site generator with a theme. Any of them would have worked, and each would have made me accept someone else's idea of what a blog is.
+
+What I have instead matches how I want to work. I write in markdown, and a guard I can read checks every page against it. The agent can redesign every page without touching a post, and the deploy just copies files. No product will add that combination to its roadmap, because I'm probably the only person who wants exactly this.
+
+Building your own used to cost weeks of evenings, and next to that a monthly subscription looked cheap. Now it costs an afternoon of agent time and a plan worth following, and I think that changes the answer for a lot of people.
+
+I expect more and more people to build their own software instead of buying off the shelf. I don't think that holds for everything. When many people share the same problem and mistakes are expensive, a product built and maintained by a team will still win. For the tools closest to how you work every day, I think building your own will become the default.
+
+## What this costs
+
+Building your own has real costs, and I don't want to skip them.
+
+I own all of it. If something breaks or needs a security fix, no vendor will do it for me. I kept that small on purpose, since the site is static files with no server code and no database. A bigger system would cost a lot more to look after.
+
+The plan did a lot of the work. The agent moved fast because I had already made the decisions. Without the plan, I would have made those same decisions halfway through the build, when each one costs more to change.
+
+I also had to build my trust in the site myself. The guard and the page checks were a large part of the engineering, and without them I'd be reviewing every page by eye.
+
+## Where this leaves things
+
+The site is live at grant-ps.com, and the source is public at [github.com/grantspeelman/grant-ps.com](https://github.com/grantspeelman/grant-ps.com). Every post links to the markdown it was generated from. Next, dev.to will import posts from the RSS feed and point back to this site as the original. After that I want to build an editor app, and that will be the second post.
+
+It's a wonderful feeling to be able to dream up something and see it come to life within a few hours. If you've put off building your own version of something because an off-the-shelf one was close enough, it might be worth another look. Happy coding.
