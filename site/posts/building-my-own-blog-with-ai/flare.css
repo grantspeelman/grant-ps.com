@@ -1,6 +1,6 @@
-/* Flare for "I built my own blog with an AI agent". CSS only, no motion, palette tokens only.
+/* Flare for "I gave an AI agent three hours to build my blog". CSS only, no motion, palette tokens only.
    Everything here is decorative: the guard panel and the budget bar are aria-hidden figures whose
-   facts are in the text beside them, and the checklist only restyles the markers of a list. */
+   facts are in the text beside them. */
 
 /* 1. A guard run: real bin/guard output, trimmed, in the same terminal panel as code blocks. */
 .guard-run { margin: 1.5em 0 0; }
@@ -25,15 +25,6 @@
 .budget-used { flex: 0 0 86.11%; background: var(--accent); }
 .budget-spare { flex: 1; background: repeating-linear-gradient(135deg, transparent 0 4px, var(--rule) 4px 6px); border-left: 1px solid var(--ink); }
 .budget figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; }
-
-/* 3. Getting it live, as a ticked-off checklist. The [x] is decorative (empty alt text). */
-.prose ol.golive { list-style: none; padding-left: 0; }
-.prose ol.golive > li { position: relative; padding-left: 2.6rem; }
-.prose ol.golive > li::before {
-  content: "[x]" / "";
-  position: absolute; left: 0; top: 0;
-  font-family: var(--mono); font-size: .9em; color: var(--accent);
-}
 
 @media (forced-colors: active) {
   .budget-used { background: CanvasText; }

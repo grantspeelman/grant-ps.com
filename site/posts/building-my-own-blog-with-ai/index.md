@@ -1,17 +1,14 @@
 ---
-title: "I built my own blog with an AI agent"
+title: "I gave an AI agent three hours to build my blog"
 slug: building-my-own-blog-with-ai
-date: 2026-10-01
+date: 2026-10-05
 description: "How Claude Code and a written plan got grant-ps.com from an empty repo to live, step by step, and why I think more people will start building their own software."
 tags: [ai, blogging, cloudflare, ruby]
 ---
 
-It's a wonderful feeling to be able to dream up something and see it come to life within a few hours.
-I was about to write another blog post and realised that I can now have my own custom blog with minimum effort.
+I gave an AI agent a written plan and a three-hour budget. This is everything it took to get this site live.
 
-I gave an AI agent a written plan and a three hour budget. This is everything it took to get this site live.
-
-Until now my writing has lived on Medium, in NEXL Engineering, and more recently on dev.to. Both work fine, but I don't have absolute creative freedom over the URL, design or how the article appears on the page.
+I was about to write another blog post and realised that I can now have my own custom blog with minimal effort. Until now my writing has lived on Medium, in NEXL Engineering, and more recently on dev.to. Both work fine, but I don't have absolute creative freedom over the URL, design or how the article appears on the page.
 
 So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually like?
 
@@ -19,7 +16,7 @@ This post is the first one on the blog it describes.
 
 ## Writing the plan first
 
-Before the agent wrote any code, I discussed with Claude how I wanted it to work and created a `PLAN.md`. I set a goal for myself to have something functioning within a few hours. I created the repo and discussed it further with Claude. The plan splits the work into eight phases and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.
+Before the agent wrote any code, I had Claude interview me with a grill-me skill until we agreed on how the blog should work. The result was `PLAN.md`: seventeen settled decisions, each chosen over the alternatives I turned down. That interview is the part of this build anyone can copy, because changing your mind during an interview costs nothing. The plan splits the work into eight phases and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.
 
 The core idea fits in four lines:
 
@@ -38,7 +35,7 @@ The plan tells the agent never to alter, add to, reorder or omit my prose. I hav
 
 The fidelity guard renders the markdown, pulls the post body out of the agent's HTML, and compares the two block by block. It checks headings, paragraphs, list items and every line of code. Whitespace may change and nothing else may. If a curly quote turns straight or a code line goes missing, the guard fails and prints a diff that shows the agent what to fix.
 
-The guard runs in a pre-commit hook, so neither the agent nor I can commit a page that changes my words. In the end to end test, it blocked a commit where one word on the page differed from the markdown.
+The guard runs in a pre-commit hook, so neither the agent nor I can commit a page that changes my words. In the end-to-end test, it blocked a commit where one word on the page differed from the markdown.
 
 Later the home page intro got the same treatment. A redesign rewrites the home page, so the intro now has its own markdown file and the guard checks it too.
 
@@ -69,16 +66,7 @@ The build took 2 hours 35 minutes of wall time, including the time the agent spe
 
 ## Getting it live
 
-The agent can't click through the Cloudflare dashboard for me, so I did that part myself. We went one step at a time. The agent told me what to do next and checked each step from its side before we moved on.
-
-1. I bought grant-ps.com through Cloudflare Registrar.
-2. I created the Worker with Workers Builds and connected it to the GitHub repo, with no build command and `npx wrangler deploy` as the deploy command. The first deploy to `workers.dev` finished in under a minute.
-3. The build log showed Cloudflare installing my Ruby gems and npm packages before every deploy. The deploy needs neither, so we turned that off with a `SKIP_DEPENDENCY_INSTALL` build variable. I added it to the runtime variables first, and the agent saw from my screenshot that it was in the wrong section.
-4. I attached the custom domain and added a redirect from www to the bare domain. The agent tried every combination of http, https and www, and found that `http://www.grant-ps.com` returned a 522 error because the redirect rule only matched https. Turning on Always Use HTTPS fixed it.
-5. I turned on Cloudflare Web Analytics. The agent recommended a manual token, but I wanted to try automatic injection first because it was less work. The beacon appeared on the live pages within a minute, and the repo didn't need to change.
-6. I added links to my writing elsewhere and wrote the intro.
-
-The intro went live a little over an hour after the first deploy.
+I decided to set up Cloudflare myself, since it was simple enough to do by hand. The agent walked me through it and checked each step from its side.
 
 ## Why I think more people will build their own
 
@@ -100,10 +88,10 @@ I own all of it. If something breaks or needs a security fix, no vendor will do 
 
 The plan did a lot of the work. The agent moved fast because I had already made the decisions. Without the plan, I would have made those same decisions halfway through the build, when each one costs more to change.
 
-I trust the site because of the guard and the page checks.
+I also had to build my trust in the site myself. The guard and the page checks were a large part of the engineering, and without them I'd be reviewing every page by eye.
 
 ## Where this leaves things
 
 The site is live at grant-ps.com, and the source is public at [github.com/grantspeelman/grant-ps.com](https://github.com/grantspeelman/grant-ps.com). Every post links to the markdown it was generated from. Next, dev.to will import posts from the RSS feed and point back to this site as the original. After that I want to build an editor app, and that will be the second post.
 
-If you've put off building your own version of something because an off the shelf one was close enough, it might be worth another look. Happy coding.
+It's a wonderful feeling to be able to dream up something and see it come to life within a few hours. If you've put off building your own version of something because an off-the-shelf one was close enough, it might be worth another look. Happy coding.

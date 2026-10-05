@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>I built my own blog with an AI agent · Grant Petersen-Speelman</title>
+<title>I gave an AI agent three hours to build my blog · Grant Petersen-Speelman</title>
 <meta name="description" content="How Claude Code and a written plan got grant-ps.com from an empty repo to live, step by step, and why I think more people will start building their own software.">
 <link rel="canonical" href="https://grant-ps.com/posts/building-my-own-blog-with-ai/">
 <link rel="alternate" type="application/rss+xml" title="Grant Petersen-Speelman" href="/feed.xml">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Grant Petersen-Speelman">
-<meta property="og:title" content="I built my own blog with an AI agent">
+<meta property="og:title" content="I gave an AI agent three hours to build my blog">
 <meta property="og:description" content="How Claude Code and a written plan got grant-ps.com from an empty repo to live, step by step, and why I think more people will start building their own software.">
 <meta property="og:url" content="https://grant-ps.com/posts/building-my-own-blog-with-ai/">
 <meta property="og:image" content="https://grant-ps.com/assets/og-default.png">
-<meta property="article:published_time" content="2026-10-01">
+<meta property="article:published_time" content="2026-10-05">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="I built my own blog with an AI agent">
+<meta name="twitter:title" content="I gave an AI agent three hours to build my blog">
 <meta name="twitter:description" content="How Claude Code and a written plan got grant-ps.com from an empty repo to live, step by step, and why I think more people will start building their own software.">
 <meta name="twitter:image" content="https://grant-ps.com/assets/og-default.png">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -36,20 +36,20 @@
   <article class="entry">
     <header class="entry-head">
       <p class="label"><span>posts/building-my-own-blog-with-ai</span><span class="no">entry #001</span></p>
-      <h1>I built my own blog with an AI agent</h1>
+      <h1>I gave an AI agent three hours to build my blog</h1>
       <p class="abstract">How Claude Code and a written plan got grant-ps.com from an empty repo to live, step by step, and why I think more people will start building their own software.</p>
     </header>
     <aside class="margin" aria-label="Post details">
       <dl>
-        <dt>Logged</dt><dd><time datetime="2026-10-01">2026-10-01</time></dd>
-        <dt>Length</dt><dd>1634 words, 9 min</dd>
+        <dt>Logged</dt><dd><time datetime="2026-10-05">2026-10-05</time></dd>
+        <dt>Length</dt><dd>1441 words, 8 min</dd>
         <dt>Tags</dt><dd><ul class="tags"><li>#ai</li><li>#blogging</li><li>#cloudflare</li><li>#ruby</li></ul></dd>
         <dt>Source</dt><dd><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/building-my-own-blog-with-ai/index.md">Read the markdown source</a></dd>
       </dl>
       <nav class="ruler" aria-label="On this page">
         <p>On this page</p>
         <ol>
-          <li class="now" data-target="content"><a href="#content" aria-current="location">I built my own blog with an AI agent</a></li>
+          <li class="now" data-target="content"><a href="#content" aria-current="location">I gave an AI agent three hours to build my blog</a></li>
           <li data-target="writing-the-plan-first"><a href="#writing-the-plan-first">Writing the plan first</a></li>
           <li data-target="a-guard-for-my-words"><a href="#a-guard-for-my-words">A guard for my words</a></li>
           <li data-target="three-designs-then-a-fourth"><a href="#three-designs-then-a-fourth">Three designs, then a fourth</a></li>
@@ -64,14 +64,12 @@
       </nav>
     </aside>
     <div class="prose" data-post-body>
-<p>It's a wonderful feeling to be able to dream up something and see it come to life within a few hours.
-I was about to write another blog post and realised that I can now have my own custom blog with minimum effort.</p>
-<p>I gave an AI agent a written plan and a three hour budget. This is everything it took to get this site live.</p>
-<p>Until now my writing has lived on Medium, in NEXL Engineering, and more recently on dev.to. Both work fine, but I don't have absolute creative freedom over the URL, design or how the article appears on the page.</p>
+<p>I gave an AI agent a written plan and a three-hour budget. This is everything it took to get this site live.</p>
+<p>I was about to write another blog post and realised that I can now have my own custom blog with minimal effort. Until now my writing has lived on Medium, in NEXL Engineering, and more recently on dev.to. Both work fine, but I don't have absolute creative freedom over the URL, design or how the article appears on the page.</p>
 <p>So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually like?</p>
 <p>This post is the first one on the blog it describes.</p>
 <h2 id="writing-the-plan-first">Writing the plan first<a class="anchor" href="#writing-the-plan-first" aria-label="Link to this section"></a></h2>
-<p>Before the agent wrote any code, I discussed with Claude how I wanted it to work and created a <code>PLAN.md</code>. I set a goal for myself to have something functioning within a few hours. I created the repo and discussed it further with Claude. The plan splits the work into eight phases and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.</p>
+<p>Before the agent wrote any code, I had Claude interview me with a grill-me skill until we agreed on how the blog should work. The result was <code>PLAN.md</code>: seventeen settled decisions, each chosen over the alternatives I turned down. That interview is the part of this build anyone can copy, because changing your mind during an interview costs nothing. The plan splits the work into eight phases and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.</p>
 <p>The core idea fits in four lines:</p>
 <ul>
 <li>Markdown is the source of truth for every post.</li>
@@ -97,7 +95,7 @@ I was about to write another blog post and realised that I can now have my own c
 1</div>
   <figcaption>Real output, trimmed: the guard on a scratch copy of this page with one word changed.</figcaption>
 </figure>
-<p>The guard runs in a pre-commit hook, so neither the agent nor I can commit a page that changes my words. In the end to end test, it blocked a commit where one word on the page differed from the markdown.</p>
+<p>The guard runs in a pre-commit hook, so neither the agent nor I can commit a page that changes my words. In the end-to-end test, it blocked a commit where one word on the page differed from the markdown.</p>
 <p>Later the home page intro got the same treatment. A redesign rewrites the home page, so the intro now has its own markdown file and the guard checks it too.</p>
 <h2 id="three-designs-then-a-fourth">Three designs, then a fourth<a class="anchor" href="#three-designs-then-a-fourth" aria-label="Link to this section"></a></h2>
 <p>The checkpoint was the design. The agent built three directions, each with a home page and a sample post. One was an editorial serif, one was an engineering notebook, and one was loud, in cobalt, coral and lemon.</p>
@@ -120,16 +118,7 @@ I was about to write another blog post and realised that I can now have my own c
   <figcaption><span>2h 35m used</span><span>25m spare of a 3h budget</span></figcaption>
 </figure>
 <h2 id="getting-it-live">Getting it live<a class="anchor" href="#getting-it-live" aria-label="Link to this section"></a></h2>
-<p>The agent can't click through the Cloudflare dashboard for me, so I did that part myself. We went one step at a time. The agent told me what to do next and checked each step from its side before we moved on.</p>
-<ol class="golive">
-<li>I bought grant-ps.com through Cloudflare Registrar.</li>
-<li>I created the Worker with Workers Builds and connected it to the GitHub repo, with no build command and <code>npx wrangler deploy</code> as the deploy command. The first deploy to <code>workers.dev</code> finished in under a minute.</li>
-<li>The build log showed Cloudflare installing my Ruby gems and npm packages before every deploy. The deploy needs neither, so we turned that off with a <code>SKIP_DEPENDENCY_INSTALL</code> build variable. I added it to the runtime variables first, and the agent saw from my screenshot that it was in the wrong section.</li>
-<li>I attached the custom domain and added a redirect from www to the bare domain. The agent tried every combination of http, https and www, and found that <code>http://www.grant-ps.com</code> returned a 522 error because the redirect rule only matched https. Turning on Always Use HTTPS fixed it.</li>
-<li>I turned on Cloudflare Web Analytics. The agent recommended a manual token, but I wanted to try automatic injection first because it was less work. The beacon appeared on the live pages within a minute, and the repo didn't need to change.</li>
-<li>I added links to my writing elsewhere and wrote the intro.</li>
-</ol>
-<p>The intro went live a little over an hour after the first deploy.</p>
+<p>I decided to set up Cloudflare myself, since it was simple enough to do by hand. The agent walked me through it and checked each step from its side.</p>
 <h2 id="why-i-think-more-people-will-build-their-own">Why I think more people will build their own<a class="anchor" href="#why-i-think-more-people-will-build-their-own" aria-label="Link to this section"></a></h2>
 <p>One thought kept coming back while I did this.</p>
 <p>I could have used Medium, Ghost, WordPress, or a static site generator with a theme. Any of them would have worked, and each would have made me accept someone else's idea of what a blog is.</p>
@@ -140,10 +129,10 @@ I was about to write another blog post and realised that I can now have my own c
 <p>Building your own has real costs, and I don't want to skip them.</p>
 <p>I own all of it. If something breaks or needs a security fix, no vendor will do it for me. I kept that small on purpose, since the site is static files with no server code and no database. A bigger system would cost a lot more to look after.</p>
 <p>The plan did a lot of the work. The agent moved fast because I had already made the decisions. Without the plan, I would have made those same decisions halfway through the build, when each one costs more to change.</p>
-<p>I trust the site because of the guard and the page checks.</p>
+<p>I also had to build my trust in the site myself. The guard and the page checks were a large part of the engineering, and without them I'd be reviewing every page by eye.</p>
 <h2 id="where-this-leaves-things">Where this leaves things<a class="anchor" href="#where-this-leaves-things" aria-label="Link to this section"></a></h2>
 <p>The site is live at grant-ps.com, and the source is public at <a href="https://github.com/grantspeelman/grant-ps.com">github.com/grantspeelman/grant-ps.com</a>. Every post links to the markdown it was generated from. Next, dev.to will import posts from the RSS feed and point back to this site as the original. After that I want to build an editor app, and that will be the second post.</p>
-<p>If you've put off building your own version of something because an off the shelf one was close enough, it might be worth another look. Happy coding.</p>
+<p>It's a wonderful feeling to be able to dream up something and see it come to life within a few hours. If you've put off building your own version of something because an off-the-shelf one was close enough, it might be worth another look. Happy coding.</p>
     </div>
     <footer class="entry-foot"><span aria-hidden="true">EOF</span><nav aria-label="Post"><a href="/">All writing</a><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/building-my-own-blog-with-ai/index.md">Read the markdown source</a></nav></footer>
   </article>
