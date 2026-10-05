@@ -6,17 +6,20 @@ description: "How Claude Code and a written plan got grant-ps.com from an empty 
 tags: [ai, blogging, cloudflare, ruby]
 ---
 
+It's a wonderful feeling to be able to dream up something and see it come to life within a few hours.
+I was about to write another blog post an realised that I can now have my own custom blog with minimum effort.
+
 I gave an AI agent a written plan and a three hour budget. This is everything it took to get this site live.
 
-Until now my writing has lived on Medium, in NEXL Engineering, and on dev.to. Both work fine, but I don't control the URL or the design, and I don't control how a post gets from markdown to a page.
+Until now my writing has lived on Medium, in NEXL Engineering, and I recently started on dev.to. Both work fine, but I don't have absolute creative freedom from the URL, design or how the article appears on the page.
 
-So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually trust?
+So I moved it to my own domain. Rather than pick a platform, I made it an experiment. Can an AI agent build a personal blog in an afternoon, with a publishing workflow I actually like?
 
 This post is the first one on the blog it describes.
 
 ## Writing the plan first
 
-Before the agent wrote any code, I wrote `PLAN.md`. It has seventeen settled decisions, each with the option I rejected next to it. It sets a three hour budget, splits the work into eight phases, and lists what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.
+Before the agent wrote any code, I discussed with Claude what and how I would like it to work and created a `PLAN.md`. I set a goal for myself to have something functioning within a few hours. Created the repo and further discussed with claude and splits the work into eight phases, and listed what the agent is not allowed to do. One phase ends with a checkpoint where the agent has to stop and wait for me.
 
 The core idea fits in four lines:
 
@@ -97,7 +100,7 @@ I own all of it. If something breaks or needs a security fix, no vendor will do 
 
 The plan did a lot of the work. The agent moved fast because I had already made the decisions. Without the plan, I would have made those same decisions halfway through the build, when each one costs more to change.
 
-Someone still has to look at the result. The agent caught most of its own mistakes, but only because the publishing skill makes it screenshot and read its own pages. I trust the site because of the guard and the page checks. I wouldn't trust the agent's word on its own.
+I trust the site because of the guard and the page checks.
 
 ## Where this leaves things
 
