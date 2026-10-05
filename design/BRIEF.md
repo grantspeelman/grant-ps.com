@@ -44,7 +44,7 @@ Dark mode follows the system setting (`prefers-color-scheme`); there is no toggl
 
 - One centred column, `max-width: 58rem`, 1rem side padding on phones, 1.5rem from 40rem.
 - **Post:** source order is header (path label with entry number, h1, description), details (date, length, tags, source link, ruler), body, footer. On phones they stack in that order. From 52rem the details become a sticky right-aligned margin column beside the post, and the body is capped at 38rem. From 86rem sidenotes hang to the right of the body, outside the column.
-- **Home:** a hero (`$ whoami`, name as h1, `$ cat about.txt`, intro line) with the `site.yml` card beside it from 52rem; then "Writing" (the ledger, newest first: entry number, date, title link, description, tags), then "Writing elsewhere" (venue, link). Each section has a decorative shell command above its heading (`$ ls -t posts/`), hidden from screen readers.
+- **Home:** a hero (`$ whoami`, name as h1, `$ cat intro.md`, intro line) with the `site.yml` card beside it from 52rem; then "Writing" (the ledger, newest first: entry number, date, title link, description, tags), then "Writing elsewhere" (venue, link). Each section has a decorative shell command above its heading (`$ ls -t posts/`), hidden from screen readers.
 - Sticky top bar: the prompt wordmark on the left (links home; on a post it continues with the path), `[rss]` and `[source]` on the right. Footer: "RSS feed", "Source on GitHub", and the colophon "Markdown in, hand-written HTML out. No build step."
 
 ## Components
