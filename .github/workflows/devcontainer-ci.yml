@@ -1,9 +1,17 @@
 name: devcontainer
 
+# Only when the image or this workflow changes. The checks every change
+# needs (tests, guard, feed, secret scan) run in checks.yml.
 on:
   push:
     branches: [main]
+    paths:
+      - ".devcontainer/**"
+      - ".github/workflows/devcontainer-ci.yml"
   pull_request:
+    paths:
+      - ".devcontainer/**"
+      - ".github/workflows/devcontainer-ci.yml"
 
 permissions:
   contents: read
@@ -18,8 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Full history, so gitleaks scans every commit, not just the tip.
-          fetch-depth: 0
           persist-credentials: false
 
       - name: Build image
@@ -34,15 +40,6 @@ jobs:
 
       - name: Structure test
         run: container-structure-test test --image "$IMAGE" --config .devcontainer/container-structure-test.yaml
-
-      # Backstop for commits made outside the sandbox, where the pre-commit
-      # hook may not run.
-      - name: Secret scan (full history)
-        run: |
-          # Run as the checkout's owner, or git rejects the repo as "dubious ownership".
-          docker run --rm --entrypoint gitleaks --user "$(id -u):$(id -g)" -e HOME=/tmp \
-            -v "$PWD:/repo" -w /repo "$IMAGE" \
-            git --redact --no-banner --verbose .
 
   # Runs the repo's own checks inside the image, with the runner's UID (1001)
   # exercising the entrypoint's UID remapping.
