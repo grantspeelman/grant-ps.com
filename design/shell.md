@@ -140,7 +140,7 @@ Posts add the shared enhancement script after the stylesheet: `<script src="/ass
     <div>
       <p class="cmd" aria-hidden="true"><span class="dollar">$</span> whoami</p>
       <h1>{{site_title}}</h1>
-      <p class="cmd" aria-hidden="true"><span class="dollar">$</span> cat about.txt</p>
+      <p class="cmd" aria-hidden="true"><span class="dollar">$</span> cat intro.md</p>
       <div class="intro" data-intro>{{intro}}</div>
     </div>
     <pre class="spec" aria-hidden="true"><span class="k">source:</span>  <span class="v">markdown</span>
