@@ -7,7 +7,7 @@ bundle install
 # Browser checks (bin/check-pages): dev only, never deployed. Optional if Node is missing.
 if command -v npm >/dev/null 2>&1; then
   npm install --no-fund --no-audit
-  # Download a browser only if Playwright has none (the sandbox image ships one, read-only).
+  # Download a browser only if Playwright has none (the dev container image ships one, read-only).
   if ! node -e 'process.exit(require("fs").existsSync(require("playwright").chromium.executablePath()) ? 0 : 1)' 2>/dev/null; then
     npx playwright install chromium
   fi
