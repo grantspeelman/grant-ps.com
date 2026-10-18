@@ -72,6 +72,15 @@ Flare is optional, per post, and lives in `[data-flare]` elements and `flare.css
 
 Flare **may**: add a diagram, figure, small interactive or animated illustration that helps the post's point; restyle one section of the post in a way that suits its content; use accent colours already in the palette.
 
+JavaScript flare is welcome when it helps the post's point, as long as it is purely additive. The pattern:
+
+- Put it in `flare.js` (linked with `defer`, as `design/shell.md` shows). Keep it small, dependency-free, and wrapped in an IIFE that returns early if the element it needs is missing.
+- Inject, do not ship markup that only works with JS. The script builds its elements, marks the wrapper `data-flare`, and inserts it next to the paragraph or code block it relates to. With JS off nothing is injected and the post reads the same.
+- Use real controls (radio groups, buttons, `details`) with labels, so the keyboard and screen readers work. Put dynamic text in an `aria-live="polite"` region. Set text with `textContent`, never `innerHTML`.
+- Style it in `flare.css` with palette tokens, the shared focus ring and the mono type used by the code panels. Give it a `forced-colors` rule.
+- Good ideas: a toggle that replays a choice the post describes, a stepper through a real transcript, a before and after switch. Every state it shows must restate something the text already says.
+- Example: `site/posts/align-on-the-what/` (a Q1 toggle under the Codex exchange).
+
 Flare **may not**: change, add or hide the author's words (flare is excluded from the guard, so this is on trust); carry information that the text does not also give; replace the shell (header, footer, metadata, fonts); load anything from another domain; autoplay sound; animate for more than 5 seconds or ignore `prefers-reduced-motion`; break the page with JS disabled. Decorative flare gets `aria-hidden="true"`; meaningful flare gets a text alternative. Interactive flare must work with a keyboard and show focus.
 
 ## Accessibility checklist (every page)
