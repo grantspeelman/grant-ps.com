@@ -1,0 +1,21 @@
+/* Flare for "Align on the what". The Q1 toggle under the Codex exchange, injected by flare.js.
+   No motion, palette tokens only. Everything it says restates the exchange in the post. */
+
+.q1 {
+  margin: 1.25em 0 0; padding: .9rem 1rem 1rem;
+  border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 3px;
+  background: var(--card);
+  font-family: var(--mono); font-size: .85rem; line-height: 1.6;
+  min-inline-size: 0;
+}
+.q1 legend { padding: 0 .4rem; color: var(--muted); font-size: .78rem; }
+.q1 label {
+  display: flex; align-items: flex-start; gap: .6rem;
+  min-height: 1.75rem; padding: .2rem 0; cursor: pointer;
+}
+.q1 input { flex: none; margin: .3rem 0 0; accent-color: var(--accent); width: 1rem; height: 1rem; }
+.q1-out { margin: .7rem 0 0; padding-top: .7rem; border-top: 1px dashed var(--rule); color: var(--ink); }
+
+@media (forced-colors: active) {
+  .q1 { border-color: CanvasText; }
+}

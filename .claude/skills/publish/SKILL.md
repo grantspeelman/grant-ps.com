@@ -34,7 +34,7 @@ Read `design/BRIEF.md` and `design/shell.md` in full, and `site/assets/style.css
 - Follow the shell exactly: head, chrome, the post main. Fill placeholders from `site.yml` and the frontmatter.
 - Get the body from `bin/render <slug>`. Paste it into `[data-post-body]`. Then only the changes `design/shell.md` lists (table wrappers, a leading `#` heading demoted to `h2`). Add classes and wrapper elements freely; never touch the words, their order, link `href`s or image `src`s.
 - Images: keep the author's alt text. If an image has empty alt text but clearly carries meaning, tell Grant in your summary; do not write one.
-- Flare (optional): only if it helps this post's point, within the brief's "Flare" rules. Mark injected elements `data-flare`; decorative flare gets `aria-hidden="true"`; put CSS and JS in `site/posts/<slug>/flare.css` and `flare.js`, linked from the head as the shell describes. No external requests.
+- Flare (optional): only if it helps this post's point, within the brief's "Flare" rules. Interactive JavaScript flare is allowed when it is additive: `flare.js` injects a `data-flare` element and the post reads the same without it. Read the brief's JavaScript pattern and the `align-on-the-what` post for a worked example. When a post contains a moment a reader could replay or toggle (a choice, a before and after, a transcript), consider it, and say in your summary what you added or why you added nothing. Mark injected elements `data-flare`; decorative flare gets `aria-hidden="true"`; put CSS and JS in `site/posts/<slug>/flare.css` and `flare.js`, linked from the head as the shell describes. No external requests.
 
 ### 4. Regenerate `site/index.html`
 
