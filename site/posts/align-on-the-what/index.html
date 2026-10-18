@@ -43,7 +43,7 @@
     <aside class="margin" aria-label="Post details">
       <dl>
         <dt>Logged</dt><dd><time datetime="2026-10-18">2026-10-18</time></dd>
-        <dt>Length</dt><dd>774 words, 4 min</dd>
+        <dt>Length</dt><dd>769 words, 4 min</dd>
         <dt>Tags</dt><dd><ul class="tags"><li>#ai</li><li>#agents</li><li>#skills</li><li>#claudecode</li></ul></dd>
         <dt>Source</dt><dd><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/align-on-the-what/index.md">Read the markdown source</a></dd>
       </dl>
@@ -77,8 +77,8 @@ Q1: Does that match your intent?
   2. Apply only to application code.
 </code></pre>
 <p>I had typed &quot;any development&quot;. I hadn't thought about whether a one-line README fix counts as development. That question made me stop and work out what I actually meant.</p>
-<p>I went with all repository changes, because I was curious how well that would work. Either way, the question got me thinking properly about the outcome I wanted.</p>
-<p>That question is the whole idea behind two skills I've been using. <code>get-aligned</code> interviews me about the goal and outcome. <code>auto-alignment-before-action</code> checks for gaps before the agent changes anything.</p>
+<p>I went with all repository changes, because I was curious how well that would work.</p>
+<p>That's the whole idea behind two skills I've been using. <code>get-aligned</code> interviews me about the goal and outcome. <code>auto-alignment-before-action</code> checks for gaps before the agent changes anything.</p>
 <h2 id="agree-on-the-what-leave-the-how">Agree on the what, leave the how<a class="anchor" href="#agree-on-the-what-leave-the-how" aria-label="Link to this section"></a></h2>
 <p>When I work with an agent, I want us to agree on the outcome: the goal, what will be different when it's done, what's in and out of scope, and how I'll know it worked. How it gets built is the agent's call.</p>
 <p>That only works because I'm not relying on the agent's taste for the how. Linters catch style. A mutation gate catches tests that don't really test anything. <a href="https://github.com/NEXL-LTS/agent-apropos">agent-apropos</a> injects the project's conventions at the moment the agent touches a file they apply to. If the implementation comes out wrong in a way none of those catch, that's a gap in the harness, and I fix the harness.</p>
@@ -87,7 +87,7 @@ Q1: Does that match your intent?
   <div class="split-row">
     <p class="split-key">the what</p>
     <p class="split-who">agreed up front</p>
-    <p class="split-what">The goal, what will be different when it's done, what's in and out of scope, and how I'll know it worked.</p>
+    <p class="split-what">Goal, outcome, scope, done.</p>
   </div>
   <div class="split-row">
     <p class="split-key">the how</p>
@@ -97,12 +97,12 @@ Q1: Does that match your intent?
   <div class="split-row">
     <p class="split-key">the checks</p>
     <p class="split-who">tooling</p>
-    <p class="split-what">Linters catch style. A mutation gate catches tests that don't really test anything. agent-apropos injects the project's conventions.</p>
+    <p class="split-what">Linters, mutation gate, apropos.</p>
   </div>
   <figcaption>Where each decision lives. A miss that none of the checks catch is a gap in the harness, and I fix the harness.</figcaption>
 </figure>
 <h2 id="only-ask-what-changes-the-outcome">Only ask what changes the outcome<a class="anchor" href="#only-ask-what-changes-the-outcome" aria-label="Link to this section"></a></h2>
-<p><code>get-aligned</code> interviews me one multiple-choice question at a time, with its recommendation first so I can accept in a click. Before it asks anything, it checks two things. Could it find the answer itself? Would a different answer change what I end up with? If either fails, it decides on its own.</p>
+<p><code>get-aligned</code> interviews me one multiple-choice question at a time, with its recommendation first so I can accept in a click. Before it asks anything, it checks two things. Could it find the answer itself? Would a different answer change what I end up with? If it can look the answer up, it does. If the answer wouldn't change the outcome, it decides.</p>
 <p>Look at the Codex exchange again. It read the files before asking. It said &quot;I'll choose the wording and placement&quot; instead of asking me where the rule should go. One question survived, and it was about scope.</p>
 <p>When an implementation question does matter, it asks about the consequence, not the mechanism: &quot;should a reviewer see every retry?&quot; rather than &quot;should retries get their own table?&quot;</p>
 <h2 id="a-gate-before-anything-changes">A gate before anything changes<a class="anchor" href="#a-gate-before-anything-changes" aria-label="Link to this section"></a></h2>

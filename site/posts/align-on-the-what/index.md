@@ -28,9 +28,9 @@ Q1: Does that match your intent?
 
 I had typed "any development". I hadn't thought about whether a one-line README fix counts as development. That question made me stop and work out what I actually meant.
 
-I went with all repository changes, because I was curious how well that would work. Either way, the question got me thinking properly about the outcome I wanted.
+I went with all repository changes, because I was curious how well that would work.
 
-That question is the whole idea behind two skills I've been using. `get-aligned` interviews me about the goal and outcome. `auto-alignment-before-action` checks for gaps before the agent changes anything.
+That's the whole idea behind two skills I've been using. `get-aligned` interviews me about the goal and outcome. `auto-alignment-before-action` checks for gaps before the agent changes anything.
 
 ## Agree on the what, leave the how
 
@@ -42,7 +42,7 @@ Without that layer I'd have to review the how myself, and then I'd want to agree
 
 ## Only ask what changes the outcome
 
-`get-aligned` interviews me one multiple-choice question at a time, with its recommendation first so I can accept in a click. Before it asks anything, it checks two things. Could it find the answer itself? Would a different answer change what I end up with? If either fails, it decides on its own.
+`get-aligned` interviews me one multiple-choice question at a time, with its recommendation first so I can accept in a click. Before it asks anything, it checks two things. Could it find the answer itself? Would a different answer change what I end up with? If it can look the answer up, it does. If the answer wouldn't change the outcome, it decides.
 
 Look at the Codex exchange again. It read the files before asking. It said "I'll choose the wording and placement" instead of asking me where the rule should go. One question survived, and it was about scope.
 
