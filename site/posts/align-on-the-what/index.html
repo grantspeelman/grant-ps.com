@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Align on the what. Let the tooling handle the how. · Grant Petersen-Speelman</title>
+<meta name="description" content="Why my agent interviews me about the outcome before it changes anything, and leaves the implementation to linters and injected conventions.">
+<link rel="canonical" href="https://grant-ps.com/posts/align-on-the-what/">
+<link rel="alternate" type="application/rss+xml" title="Grant Petersen-Speelman" href="/feed.xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Grant Petersen-Speelman">
+<meta property="og:title" content="Align on the what. Let the tooling handle the how.">
+<meta property="og:description" content="Why my agent interviews me about the outcome before it changes anything, and leaves the implementation to linters and injected conventions.">
+<meta property="og:url" content="https://grant-ps.com/posts/align-on-the-what/">
+<meta property="og:image" content="https://grant-ps.com/assets/og-default.png">
+<meta property="article:published_time" content="2026-10-18">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Align on the what. Let the tooling handle the how.">
+<meta name="twitter:description" content="Why my agent interviews me about the outcome before it changes anything, and leaves the implementation to linters and injected conventions.">
+<meta name="twitter:image" content="https://grant-ps.com/assets/og-default.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/notebook.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="topbar">
+  <div class="page">
+    <a class="wordmark" href="/"><span class="prompt" aria-hidden="true">~/</span>grant-ps.com<span class="cwd" aria-hidden="true"><span class="cwd-long">/posts/align-on-the-what</span><span class="cwd-short">/posts/…</span></span><span class="cursor" aria-hidden="true"></span></a>
+    <nav aria-label="Site"><a href="/feed.xml">rss</a><a href="https://github.com/grantspeelman/grant-ps.com">source</a></nav>
+  </div>
+</header>
+
+<main id="content" class="page">
+  <article class="entry">
+    <header class="entry-head">
+      <p class="label"><span>posts/align-on-the-what</span><span class="no">entry #002</span></p>
+      <h1>Align on the what. Let the tooling handle the how.</h1>
+      <p class="abstract">Why my agent interviews me about the outcome before it changes anything, and leaves the implementation to linters and injected conventions.</p>
+    </header>
+    <aside class="margin" aria-label="Post details">
+      <dl>
+        <dt>Logged</dt><dd><time datetime="2026-10-18">2026-10-18</time></dd>
+        <dt>Length</dt><dd>774 words, 4 min</dd>
+        <dt>Tags</dt><dd><ul class="tags"><li>#ai</li><li>#agents</li><li>#skills</li><li>#claudecode</li></ul></dd>
+        <dt>Source</dt><dd><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/align-on-the-what/index.md">Read the markdown source</a></dd>
+      </dl>
+      <nav class="ruler" aria-label="On this page">
+        <p>On this page</p>
+        <ol>
+          <li class="now" data-target="content"><a href="#content" aria-current="location">Align on the what. Let the tooling handle the how.</a></li>
+          <li data-target="agree-on-the-what-leave-the-how"><a href="#agree-on-the-what-leave-the-how">Agree on the what, leave the how</a></li>
+          <li data-target="only-ask-what-changes-the-outcome"><a href="#only-ask-what-changes-the-outcome">Only ask what changes the outcome</a></li>
+          <li data-target="a-gate-before-anything-changes"><a href="#a-gate-before-anything-changes">A gate before anything changes</a></li>
+          <li data-target="try-them"><a href="#try-them">Try them</a></li>
+          <li><span class="eof">EOF</span></li>
+        </ol>
+      </nav>
+    </aside>
+    <div class="prose" data-post-body>
+<p>I asked Codex to add a rule to a project's AGENTS.md, and to get aligned with me before touching the file. The rule: any development is done by sub-agents, and another sub-agent reviews the changes.</p>
+<p>It read AGENTS.md and the docs, wrote a short ledger, and came back with one question:</p>
+<pre tabindex="0"><code>The goal is to make delegation and independent review mandatory in AGENTS.md. I propose:
+
+  • All repository changes, including docs and configuration, are implemented by sub-agents.
+  • The primary agent coordinates the work.
+  • A separate sub-agent reviews the changes, and findings are addressed before completion.
+  • This update follows that process too. Only AGENTS.md changes; no commit or push.
+
+I'll choose the wording and placement.
+
+Q1: Does that match your intent?
+
+  1. Yes, apply to all repository changes.
+  2. Apply only to application code.
+</code></pre>
+<p>I had typed &quot;any development&quot;. I hadn't thought about whether a one-line README fix counts as development. That question made me stop and work out what I actually meant.</p>
+<p>I went with all repository changes, because I was curious how well that would work. Either way, the question got me thinking properly about the outcome I wanted.</p>
+<p>That question is the whole idea behind two skills I've been using. <code>get-aligned</code> interviews me about the goal and outcome. <code>auto-alignment-before-action</code> checks for gaps before the agent changes anything.</p>
+<h2 id="agree-on-the-what-leave-the-how">Agree on the what, leave the how<a class="anchor" href="#agree-on-the-what-leave-the-how" aria-label="Link to this section"></a></h2>
+<p>When I work with an agent, I want us to agree on the outcome: the goal, what will be different when it's done, what's in and out of scope, and how I'll know it worked. How it gets built is the agent's call.</p>
+<p>That only works because I'm not relying on the agent's taste for the how. Linters catch style. A mutation gate catches tests that don't really test anything. <a href="https://github.com/NEXL-LTS/agent-apropos">agent-apropos</a> injects the project's conventions at the moment the agent touches a file they apply to. If the implementation comes out wrong in a way none of those catch, that's a gap in the harness, and I fix the harness.</p>
+<p>Without that layer I'd have to review the how myself, and then I'd want to agree on it up front too. With it, my attention goes where tooling can't help: what I actually mean.</p>
+<h2 id="only-ask-what-changes-the-outcome">Only ask what changes the outcome<a class="anchor" href="#only-ask-what-changes-the-outcome" aria-label="Link to this section"></a></h2>
+<p><code>get-aligned</code> interviews me one multiple-choice question at a time, with its recommendation first so I can accept in a click. Before it asks anything, it checks two things. Could it find the answer itself? Would a different answer change what I end up with? If either fails, it decides on its own.</p>
+<p>Look at the Codex exchange again. It read the files before asking. It said &quot;I'll choose the wording and placement&quot; instead of asking me where the rule should go. One question survived, and it was about scope.</p>
+<p>When an implementation question does matter, it asks about the consequence, not the mechanism: &quot;should a reviewer see every retry?&quot; rather than &quot;should retries get their own table?&quot;</p>
+<h2 id="a-gate-before-anything-changes">A gate before anything changes<a class="anchor" href="#a-gate-before-anything-changes" aria-label="Link to this section"></a></h2>
+<p><code>auto-alignment-before-action</code> runs before the agent changes state: editing files, running commands with side effects, committing, publishing. It silently checks the goal, outcome, scope, constraints and what &quot;done&quot; means. Every answer has to trace back to something I said or a settled source like AGENTS.md. An answer it inferred doesn't count.</p>
+<p>If there's a gap, it asks one question, or runs a full <code>get-aligned</code> session for anything bigger or hard to undo. If there's no gap, it opens with one line naming what it's about to produce. That line is my last cheap chance to stop it.</p>
+<p>It also lists its out clauses up front, so we agree which problems it hands back and which it solves. This is a made-up example:</p>
+<pre tabindex="0"><code>Out clauses:
+- npm registry unreachable → stop and tell you
+- lint fails on files I didn't touch → leave them, mention at the end
+- feed validator rejects the dates → I'll fix the formatting myself
+</code></pre>
+<p>After that it keeps going. It only stops mid-task for a blocker an out clause says to hand back, or before changing the outcome we agreed.</p>
+<h2 id="try-them">Try them<a class="anchor" href="#try-them" aria-label="Link to this section"></a></h2>
+<p>I've been tuning these in my personal repo <a href="https://github.com/grantspeelman/skills">grantspeelman/skills</a>, alongside a dev container skill and <code>unslop</code>. If the idea fits how you want to work, install mine to try it, or build your own tweaked version.</p>
+<p>If you catch yourself reviewing implementation details your linters could have caught, that's a harness problem. If you catch yourself reviewing a correct implementation of the wrong thing, that's an alignment problem. These two skills are my fix for the second one.</p>
+    </div>
+    <footer class="entry-foot"><span aria-hidden="true">EOF</span><nav aria-label="Post"><a href="/">All writing</a><a href="https://github.com/grantspeelman/grant-ps.com/blob/main/site/posts/align-on-the-what/index.md">Read the markdown source</a></nav></footer>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="page">
+    <nav aria-label="Footer"><a href="/feed.xml">RSS feed</a><a href="https://github.com/grantspeelman/grant-ps.com">Source on GitHub</a></nav>
+    <p>Markdown in, hand-written HTML out. No build step.</p>
+  </div>
+</footer>
+</body>
+</html>
