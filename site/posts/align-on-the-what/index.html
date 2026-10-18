@@ -83,6 +83,24 @@ Q1: Does that match your intent?
 <p>When I work with an agent, I want us to agree on the outcome: the goal, what will be different when it's done, what's in and out of scope, and how I'll know it worked. How it gets built is the agent's call.</p>
 <p>That only works because I'm not relying on the agent's taste for the how. Linters catch style. A mutation gate catches tests that don't really test anything. <a href="https://github.com/NEXL-LTS/agent-apropos">agent-apropos</a> injects the project's conventions at the moment the agent touches a file they apply to. If the implementation comes out wrong in a way none of those catch, that's a gap in the harness, and I fix the harness.</p>
 <p>Without that layer I'd have to review the how myself, and then I'd want to agree on it up front too. With it, my attention goes where tooling can't help: what I actually mean.</p>
+<figure class="split" data-flare aria-hidden="true">
+  <div class="split-row">
+    <p class="split-key">the what</p>
+    <p class="split-who">agreed up front</p>
+    <p class="split-what">The goal, what will be different when it's done, what's in and out of scope, and how I'll know it worked.</p>
+  </div>
+  <div class="split-row">
+    <p class="split-key">the how</p>
+    <p class="split-who">the agent's call</p>
+    <p class="split-what">How it gets built.</p>
+  </div>
+  <div class="split-row">
+    <p class="split-key">the checks</p>
+    <p class="split-who">tooling</p>
+    <p class="split-what">Linters catch style. A mutation gate catches tests that don't really test anything. agent-apropos injects the project's conventions.</p>
+  </div>
+  <figcaption>Where each decision lives. A miss that none of the checks catch is a gap in the harness, and I fix the harness.</figcaption>
+</figure>
 <h2 id="only-ask-what-changes-the-outcome">Only ask what changes the outcome<a class="anchor" href="#only-ask-what-changes-the-outcome" aria-label="Link to this section"></a></h2>
 <p><code>get-aligned</code> interviews me one multiple-choice question at a time, with its recommendation first so I can accept in a click. Before it asks anything, it checks two things. Could it find the answer itself? Would a different answer change what I end up with? If either fails, it decides on its own.</p>
 <p>Look at the Codex exchange again. It read the files before asking. It said &quot;I'll choose the wording and placement&quot; instead of asking me where the rule should go. One question survived, and it was about scope.</p>

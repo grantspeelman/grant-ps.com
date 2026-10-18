@@ -3,7 +3,9 @@
 (function () {
   "use strict";
   var prose = document.querySelector("[data-post-body]");
-  var exchange = prose && prose.querySelector("pre");
+  var exchange = prose && Array.prototype.find.call(prose.querySelectorAll("pre"), function (pre) {
+    return pre.textContent.indexOf("Q1:") !== -1;
+  });
   if (!exchange) return;
 
   var options = [
@@ -17,7 +19,7 @@
       id: "app",
       label: "Apply only to application code.",
       covers: "Only application code goes to sub-agents and gets a separate review.",
-      readme: "A one-line README fix is outside the rule."
+      readme: "Docs and configuration are outside the rule."
     }
   ];
 
