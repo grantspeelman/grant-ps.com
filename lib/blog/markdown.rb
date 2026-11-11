@@ -22,7 +22,7 @@ module Blog
     # from the keyboard. The words are untouched.
     def self.page_body(markdown)
       render(markdown).gsub(/<pre( lang="([^"]*)")?>/) do
-        $2 ? %(<pre data-lang="#{$2}" tabindex="0">) : %(<pre tabindex="0">)
+        ($2) ? %(<pre data-lang="#{$2}" tabindex="0">) : %(<pre tabindex="0">)
       end
     end
   end

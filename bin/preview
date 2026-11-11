@@ -22,7 +22,7 @@ IGNORED = (File.exist?(ignore_file) ? File.readlines(ignore_file, chomp: true) :
 ignored = ->(rel) { IGNORED.any? { |pat| File.fnmatch?(pat, rel, File::FNM_PATHNAME) || File.fnmatch?(pat, File.basename(rel)) } }
 
 server = WEBrick::HTTPServer.new(Port: port, BindAddress: "0.0.0.0", AccessLog: [],
-                                 Logger: WEBrick::Log.new($stderr, WEBrick::Log::WARN))
+  Logger: WEBrick::Log.new($stderr, WEBrick::Log::WARN))
 server.mount_proc "/" do |req, res|
   path = URI.decode_www_form_component(req.path)
   rel = path.delete_prefix("/")

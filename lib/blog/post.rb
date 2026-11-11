@@ -47,7 +47,7 @@ module Blog
     def errors
       errs = []
       REQUIRED.each { |k| errs << "missing required field `#{k}`" if blank?(data[k]) }
-      (data.keys - ALLOWED).each { |k| errs << "unknown field `#{k}` (allowed: #{ALLOWED.join(', ')})" }
+      (data.keys - ALLOWED).each { |k| errs << "unknown field `#{k}` (allowed: #{ALLOWED.join(", ")})" }
       %w[title description].each { |k| errs << "`#{k}` must be a string" if data[k] && !data[k].is_a?(String) }
 
       if slug
@@ -64,7 +64,7 @@ module Blog
         end
       end
       if data["date"].is_a?(Date) && data["updated"].is_a?(Date) && data["updated"] < data["date"]
-        errs << "`updated` (#{data['updated']}) is before `date` (#{data['date']})"
+        errs << "`updated` (#{data["updated"]}) is before `date` (#{data["date"]})"
       end
 
       if data.key?("tags")

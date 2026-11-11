@@ -9,4 +9,5 @@ gem "webrick", "~> 1.9"
 group :test do
   gem "minitest", "~> 6.0"
   gem "rake"
+  gem "standard", "~> 1.57", require: false
 end

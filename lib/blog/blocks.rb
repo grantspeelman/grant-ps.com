@@ -68,7 +68,7 @@ module Blog
         elsif c.element?
           name = c.name.downcase
           next if SKIP.include?(name) || name == "pre" || TEXT_BLOCKS.include?(name)
-          name == "br" ? buf << " " : buf << own_text(c)
+          buf << ((name == "br") ? " " : own_text(c))
         end
       end
       buf

@@ -112,6 +112,21 @@ class PrecommitTest < Minitest::Test
     assert_blocked(/home page intro does not match site\/intro\.md/)
   end
 
+  def test_blocks_em_dash_in_staged_page_chrome
+    edit("site/posts/good-post/index.html") { |h| h.sub("<title>A “good” fixture post</title>", "<title>A “good” fixture post \u2014 Fixture</title>") }
+    git "add", "-A"
+    assert_blocked(%r{em-dash in copy outside.*\n.*site/posts/good-post/index\.html:5: em-dash in text of <title>})
+  end
+
+  def test_allows_em_dash_in_authors_words
+    edit("site/posts/good-post/index.md") { |m| m.sub("Last paragraph.", "Last \u2014 paragraph.") }
+    edit("site/posts/good-post/index.html") { |h| h.sub("Last paragraph.", "Last \u2014 paragraph.") }
+    system("#{@dir}/bin/meta", out: File::NULL, exception: true)
+    git "add", "-A"
+    out, ok = precommit
+    assert ok, out
+  end
+
   def test_allows_intro_change_with_matching_home_page
     edit("site/intro.md") { |m| m.sub("A second paragraph.", "A new second paragraph.") }
     edit("site/index.html") { |h| h.sub("A second paragraph.", "A new second paragraph.") }
