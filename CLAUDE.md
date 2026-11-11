@@ -2,6 +2,7 @@
 
 Personal blog for grant-ps.com. Read `README.md` for the workflow.
 
+- Finding things: "Where things live" in `README.md` maps each concern to its file, test and check commands, the environment, and what CI runs.
 - Publishing: use the `/publish <slug>` skill. Redesigns: `/regenerate-site`. Follow them exactly.
 - Never alter, add to, reorder or omit the author's prose. The markdown is the text; fix the HTML, never the markdown.
 - Never change a published slug. Every page uses `design/shell.md`.
