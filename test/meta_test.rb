@@ -76,4 +76,31 @@ class MetaTest < Minitest::Test
       assert_equal %w[A\ “good”\ fixture\ post Old], feed_doc(root).xpath("//item/title").map(&:text)
     end
   end
+
+  def with_body_appended(text)
+    with_fixture_copy do |root|
+      path = File.join(post_dir(root), "index.md")
+      File.write(path, File.read(path) + "\n#{text}\n")
+      yield root
+    end
+  end
+
+  # A URL that cannot be made absolute must stop the build with a clear message,
+  # never pass through to dev.to as-is.
+  def test_raises_on_url_that_cannot_be_made_absolute
+    with_body_appended("![Broken](http://host:port/x.png)") do |root|
+      e = assert_raises(ArgumentError) { meta(root).files }
+      assert_match %r{cannot make "http://host:port/x\.png" absolute against https://grant-ps\.com/posts/good-post/}, e.message
+    end
+    with_body_appended(%(<a href="http://[::1">raw link</a>)) do |root|
+      assert_raises(ArgumentError) { meta(root).files }
+    end
+  end
+
+  def test_srcset_candidates_are_made_absolute
+    with_body_appended(%(<img src="a.png" srcset="a.png 1x, /img/b.png 2x" alt="x">)) do |root|
+      img = Nokogiri::HTML5.fragment(meta(root).content_html(Blog::Site.new(root).post("good-post"))).at_css("img[srcset]")
+      assert_equal "https://grant-ps.com/posts/good-post/a.png 1x, https://grant-ps.com/img/b.png 2x", img["srcset"]
+    end
+  end
 end

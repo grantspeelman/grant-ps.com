@@ -57,6 +57,39 @@ class PostTest < Minitest::Test
     assert post({ "draft" => true }).any? { |e| e.include?("unknown field `draft`") }
   end
 
+  # The boundary: `updated` may equal `date`; only a strictly earlier day is an error.
+  def test_updated_on_the_same_day_is_valid
+    assert_empty post({ "updated" => Date.new(2026, 10, 5) })
+    assert_empty post({ "updated" => Date.new(2026, 10, 6) })
+  end
+
+  def test_updated_one_day_before_date_is_an_error
+    assert_includes post({ "updated" => Date.new(2026, 10, 4) }), "`updated` (2026-10-04) is before `date` (2026-10-05)"
+  end
+
+  # Quoted dates are strings in YAML; the ordering rule must still apply to them.
+  def test_quoted_dates_are_compared_too
+    assert post({ "updated" => "2026-10-04" }).any? { |e| e.include?("before `date`") }
+    assert post({ "date" => "2026-10-05", "updated" => Date.new(2026, 10, 4) }).any? { |e| e.include?("before `date`") }
+    assert_empty post({ "date" => "2026-10-05", "updated" => "2026-10-05" })
+  end
+
+  def test_rejects_impossible_dates
+    assert post({ "date" => "2026-02-30" }).any? { |e| e.include?("ISO 8601") }
+    assert post({ "updated" => "2026-13-01" }).any? { |e| e.include?("`updated` must be an ISO 8601") }
+  end
+
+  def test_lastmod_is_updated_or_date
+    Dir.mktmpdir do |d|
+      dir = File.join(d, "my-post")
+      Dir.mkdir(dir)
+      File.write(File.join(dir, "index.md"), "---\ntitle: T\nslug: my-post\ndate: 2026-10-05\ndescription: D\n---\nBody\n")
+      assert_equal Date.new(2026, 10, 5), Blog::Post.load(dir).lastmod
+      File.write(File.join(dir, "index.md"), "---\ntitle: T\nslug: my-post\ndate: 2026-10-05\nupdated: 2026-10-07\ndescription: D\n---\nBody\n")
+      assert_equal Date.new(2026, 10, 7), Blog::Post.load(dir).lastmod
+    end
+  end
+
   def test_rejects_missing_frontmatter
     Dir.mktmpdir do |d|
       File.write(File.join(d, "index.md"), "No frontmatter")
