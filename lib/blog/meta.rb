@@ -22,10 +22,10 @@ module Blog
       x = +%(<?xml version="1.0" encoding="UTF-8"?>\n)
       x << %(<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">\n)
       x << "  <channel>\n"
-      x << "    <title>#{esc(c.fetch('title'))}</title>\n"
+      x << "    <title>#{esc(c.fetch("title"))}</title>\n"
       x << "    <link>#{esc(@site.home_url)}</link>\n"
-      x << "    <description>#{esc(c['description'] || "Writing by #{c.fetch('author')}")}</description>\n"
-      x << "    <language>#{esc(c['language'] || 'en')}</language>\n"
+      x << "    <description>#{esc(c["description"] || "Writing by #{c.fetch("author")}")}</description>\n"
+      x << "    <language>#{esc(c["language"] || "en")}</language>\n"
       x << %(    <atom:link href="#{esc(@site.feed_url)}" rel="self" type="application/rss+xml"/>\n)
       x << "    <lastBuildDate>#{rfc822(posts.map(&:lastmod).max)}</lastBuildDate>\n" if posts.any?
       posts.each { |p| x << item(p) }
@@ -76,7 +76,7 @@ module Blog
     end
 
     def url_entry(loc, lastmod)
-      x = +"  <url>\n    <loc>#{esc(loc)}</loc>\n"
+      x = "  <url>\n    <loc>#{esc(loc)}</loc>\n"
       x << "    <lastmod>#{lastmod.iso8601}</lastmod>\n" if lastmod
       x << "  </url>\n"
     end
@@ -92,6 +92,6 @@ module Blog
 
     def esc(s) = s.to_s.encode(xml: :text).gsub('"', "&quot;")
 
-    def cdata(s) = "<![CDATA[#{s.gsub(']]>', ']]]]><![CDATA[>')}]]>"
+    def cdata(s) = "<![CDATA[#{s.gsub("]]>", "]]]]><![CDATA[>")}]]>"
   end
 end

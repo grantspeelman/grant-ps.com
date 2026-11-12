@@ -15,6 +15,9 @@ jobs:
       # Keep in step with GITLEAKS_VERSION and GITLEAKS_SHA256_AMD64 in .devcontainer/Dockerfile.
       GITLEAKS_VERSION: 8.30.1
       GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+      # CI only; the dev container does not ship actionlint.
+      ACTIONLINT_VERSION: 1.7.12
+      ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -22,11 +25,27 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Install actionlint
+        run: |
+          curl -fsSL --retry 5 -o /tmp/actionlint.tar.gz \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          echo "${ACTIONLINT_SHA256}  /tmp/actionlint.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/actionlint.tar.gz -C /usr/local/bin actionlint
+
+      # Invalid YAML, unknown keys and broken expressions in .github/workflows/*.yml
+      # (plus shellcheck on run: scripts, which ubuntu-latest ships).
+      - name: Workflows valid (actionlint)
+        run: actionlint -color
+
       - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           ruby-version: 4.0.7
           bundler-cache: true
 
+      - name: Ruby style (Standard)
+        run: bundle exec standardrb
+
+      # Includes test/config_test.rb: site.yml and wrangler.jsonc parse.
       - name: Tests
         run: bundle exec rake test
 
@@ -35,6 +54,9 @@ jobs:
 
       - name: Feed and sitemap up to date
         run: bin/meta --check
+
+      - name: No em-dashes in copy outside the author's text
+        run: bin/em-dashes
 
       - name: Install gitleaks
         run: |

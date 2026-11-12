@@ -16,7 +16,7 @@ end.parse!
 site = Blog::Site.new(root)
 invalid = site.post_slugs.filter_map do |slug|
   errs = site.post(slug).errors
-  "  #{slug}: #{errs.join('; ')}" if errs.any?
+  "  #{slug}: #{errs.join("; ")}" if errs.any?
 rescue Blog::FrontmatterError => e
   "  #{slug}: #{e.message}"
 end
@@ -36,7 +36,7 @@ Blog::Meta.new(site).files.each do |name, content|
 end
 
 if check
-  abort "bin/meta --check: out of date: #{stale.join(', ')}. Run bin/meta." if stale.any?
+  abort "bin/meta --check: out of date: #{stale.join(", ")}. Run bin/meta." if stale.any?
   puts "bin/meta --check: feed.xml and sitemap.xml are up to date"
 elsif stale.empty?
   puts "bin/meta: feed.xml and sitemap.xml already up to date"

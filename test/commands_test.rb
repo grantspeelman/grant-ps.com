@@ -93,20 +93,20 @@ class CommandsTest < Minitest::Test
   def test_guard_without_arguments_checks_staged_changes
     with_fixture_copy do |root|
       git = ->(*a) { system("git", "-C", root, *a, out: File::NULL, err: File::NULL, exception: true) }
-      git.("init", "-q", "-b", "main")
-      git.("add", "-A")
-      git.("-c", "user.email=t@example.com", "-c", "user.name=T", "commit", "-q", "--no-verify", "-m", "base")
+      git.call("init", "-q", "-b", "main")
+      git.call("add", "-A")
+      git.call("-c", "user.email=t@example.com", "-c", "user.name=T", "commit", "-q", "--no-verify", "-m", "base")
       break_post(root)
       break_intro(root)
       assert_match(/nothing staged/, assert_passes(guard(root)))
 
-      git.("add", "site/posts/good-post/index.html")
+      git.call("add", "site/posts/good-post/index.html")
       result = guard(root)
       assert_fails result, /✗ good-post/
       refute_match(/home intro/, result.first)
 
-      git.("reset", "-q")
-      git.("add", "site/index.html")
+      git.call("reset", "-q")
+      git.call("add", "site/index.html")
       result = guard(root)
       assert_fails result, /✗ home intro/
       refute_match(/good-post/, result.first)

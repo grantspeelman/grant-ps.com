@@ -1,0 +1,16 @@
+# Ruby style: Standard (https://github.com/standardrb/standard), run by `bundle exec standardrb`
+# locally and in CI. `bundle exec standardrb --fix` corrects most offences.
+
+# Standard skips bin/* by default, but bin/guard, bin/meta, bin/precommit, bin/preview and
+# bin/render are Ruby. Turn the defaults off and re-add the rest of them.
+default_ignores: false
+
+ignore:
+  - ".git/**/*"
+  - "node_modules/**/*"
+  - "vendor/**/*"
+  - "tmp/**/*"
+  # The repo writes hash literals with inner spaces, `{ "a" => 1 }`, everywhere (RuboCop's
+  # own default). Standard wants `{"a" => 1}`. Keep the local style rather than churn ~40 lines.
+  - "**/*":
+      - Layout/SpaceInsideHashLiteralBraces

@@ -2,7 +2,8 @@ require "test_helper"
 require "json"
 require "uri"
 
-# Invariants of the real, committed config (not the fixtures).
+# Invariants of the real, committed config (not the fixtures). The workflows under
+# .github/workflows/ are checked by actionlint in CI.
 class ConfigTest < Minitest::Test
   REPO = File.expand_path("..", __dir__)
 
@@ -35,7 +36,7 @@ class ConfigTest < Minitest::Test
   def test_source_url_points_at_each_posts_markdown
     template = site.config["source_url_template"]
     assert_includes template, "%{slug}"
-    prefix = "#{site.config['repo_url'].chomp('/')}/blob/main/"
+    prefix = "#{site.config["repo_url"].chomp("/")}/blob/main/"
     refute_empty site.post_slugs
     site.post_slugs.each do |slug|
       url = site.source_url(slug)

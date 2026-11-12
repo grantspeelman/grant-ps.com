@@ -54,8 +54,10 @@ module Blog
       return Result.new(INTRO, ["missing site/index.html"]) unless File.file?(home)
 
       intros = Nokogiri::HTML5(File.read(home)).css("[data-intro]")
-      return Result.new(INTRO, ["site/index.html must have exactly one [data-intro] element, found #{intros.size} " \
-                                "(put the output of bin/render --intro in it)"]) if intros.size != 1
+      if intros.size != 1
+        return Result.new(INTRO, ["site/index.html must have exactly one [data-intro] element, found #{intros.size} " \
+                                  "(put the output of bin/render --intro in it)"])
+      end
 
       intro = intros.first.dup
       intro.css("[data-flare]").each(&:remove)
@@ -77,7 +79,7 @@ module Blog
       end
       canonical = @site.post_url(post.folder)
       found = doc.css('link[rel="canonical"]').map { |l| l["href"] }
-      errs << "missing <link rel=\"canonical\" href=\"#{canonical}\"> (found: #{found.empty? ? 'none' : found.join(', ')})" unless found == [canonical]
+      errs << "missing <link rel=\"canonical\" href=\"#{canonical}\"> (found: #{found.empty? ? "none" : found.join(", ")})" unless found == [canonical]
       errs
     end
 
@@ -87,9 +89,9 @@ module Blog
       return [] if exp == act
 
       i = (0...[exp.size, act.size].max).find { |n| exp[n] != act[n] }
-      msg = +"#{t.what} does not match #{t.source} (block #{i + 1} of #{expected.size} expected)\n"
-      msg << "  markdown says: #{expected[i] ? expected[i].to_s : '(nothing: the page has extra content here)'}\n"
-      msg << "  page has:      #{actual[i] ? actual[i].to_s : '(nothing: the page is missing content from here on)'}\n"
+      msg = "#{t.what} does not match #{t.source} (block #{i + 1} of #{expected.size} expected)\n"
+      msg << "  markdown says: #{expected[i] ? expected[i].to_s : "(nothing: the page has extra content here)"}\n"
+      msg << "  page has:      #{actual[i] ? actual[i].to_s : "(nothing: the page is missing content from here on)"}\n"
       if expected[i] && actual[i] && !expected[i].code? && !actual[i].code?
         msg << "  first difference at character #{first_diff(expected[i].text, actual[i].text)}: " \
                "#{snippet(expected[i].text, actual[i].text)}\n"
@@ -122,7 +124,7 @@ module Blog
       lcs = Array.new(e.size + 1) { Array.new(a.size + 1, 0) }
       (e.size - 1).downto(0) do |x|
         (a.size - 1).downto(0) do |y|
-          lcs[x][y] = ec[x] == ac[y] ? lcs[x + 1][y + 1] + 1 : [lcs[x + 1][y], lcs[x][y + 1]].max
+          lcs[x][y] = (ec[x] == ac[y]) ? lcs[x + 1][y + 1] + 1 : [lcs[x + 1][y], lcs[x][y + 1]].max
         end
       end
       lines = []
@@ -140,7 +142,7 @@ module Blog
           y += 1
         end
       end
-      lines.map { |l| l.length > 110 ? "#{l[0, 107]}...\n" : "#{l}\n" }.join
+      lines.map { |l| (l.length > 110) ? "#{l[0, 107]}...\n" : "#{l}\n" }.join
     end
 
     # Every image src and link href in the markdown must appear in the guarded element.

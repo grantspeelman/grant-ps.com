@@ -36,6 +36,7 @@ module Blog
         failures.concat(check_slugs(site))
         failures.concat(check_guard(site))
         failures.concat(check_meta(site))
+        failures.concat(check_em_dashes(snap))
       end
       failures.empty? ? (@out.puts("precommit: all checks passed") || true) : fail_with(failures)
     end
@@ -70,7 +71,7 @@ module Blog
       published = head_post_slugs
       missing = published.reject { |s| File.file?(File.join(site.posts_dir, s, "index.md")) }
       if missing.any?
-        msg = "published post(s) deleted or renamed: #{missing.join(', ')}\n" \
+        msg = "published post(s) deleted or renamed: #{missing.join(", ")}\n" \
               "Published slugs are frozen. Changing one breaks its canonical URL, every link to it, " \
               "and the feed guid, so dev.to would import it as a new post."
         if @env["ALLOW_SLUG_CHANGE"] == "1"
@@ -99,7 +100,14 @@ module Blog
 
     def check_meta(site)
       stale = Meta.new(site).files.reject { |name, content| File.exist?(p = File.join(site.site_dir, name)) && File.read(p) == content }
-      stale.empty? ? [] : ["#{stale.keys.map { |n| "site/#{n}" }.join(' and ')} out of date with the staged posts. Run bin/meta and stage the result."]
+      stale.empty? ? [] : ["#{stale.keys.map { |n| "site/#{n}" }.join(" and ")} out of date with the staged posts. Run bin/meta and stage the result."]
+    end
+
+    # Staged pages only: an em-dash in copy outside the author's guarded text (bin/em-dashes).
+    def check_em_dashes(snap)
+      pages = staged_paths.select { |p| p.start_with?("site/") && p.end_with?(".html") && File.file?(File.join(snap, p)) }
+      hits = pages.flat_map { |p| EmDashCheck.scan_file(File.join(snap, p), p) }
+      hits.empty? ? [] : ["em-dash in copy outside [data-post-body] / [data-intro] (CLAUDE.md: no em-dashes in copy you write):\n#{hits.join("\n")}"]
     end
 
     def head_post_slugs
@@ -112,7 +120,7 @@ module Blog
 
     def git(*args)
       out, err, st = Open3.capture3("git", "-C", @repo, *args)
-      raise "git #{args.join(' ')} failed: #{err}" unless st.success?
+      raise "git #{args.join(" ")} failed: #{err}" unless st.success?
       out
     end
   end

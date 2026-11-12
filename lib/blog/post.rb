@@ -47,7 +47,7 @@ module Blog
     def errors
       errs = []
       REQUIRED.each { |k| errs << "missing required field `#{k}`" if blank?(data[k]) }
-      (data.keys - ALLOWED).each { |k| errs << "unknown field `#{k}` (allowed: #{ALLOWED.join(', ')})" }
+      (data.keys - ALLOWED).each { |k| errs << "unknown field `#{k}` (allowed: #{ALLOWED.join(", ")})" }
       %w[title description].each { |k| errs << "`#{k}` must be a string" if data[k] && !data[k].is_a?(String) }
 
       if slug
@@ -64,7 +64,7 @@ module Blog
       end
       # Compare the parsed dates, so a quoted date ("2026-10-05") is held to the same rule.
       if dates["date"] && dates["updated"] && dates["updated"] < dates["date"]
-        errs << "`updated` (#{dates['updated'].iso8601}) is before `date` (#{dates['date'].iso8601})"
+        errs << "`updated` (#{dates["updated"].iso8601}) is before `date` (#{dates["date"].iso8601})"
       end
 
       if data.key?("tags")

@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+# Fail on an em-dash in any copy Claude wrote: anywhere in a page outside the author's
+# guarded text ([data-post-body] and [data-intro], which bin/guard checks against the markdown).
+#   bin/em-dashes            every site/**/*.html
+#   bin/em-dashes <file>...  these pages only
+require "optparse"
+require_relative "../lib/blog"
+
+root = File.expand_path("..", __dir__)
+OptionParser.new do |o|
+  o.banner = "Usage: bin/em-dashes [file...] [--root DIR]"
+  o.on("--root DIR", "Repo root (default: this repo)") { |d| root = d }
+end.parse!
+
+files = if ARGV.any?
+  ARGV
+else
+  Dir.glob("site/**/*.html", base: root).sort.map { |f| File.join(root, f) }
+end
+hits = files.flat_map do |f|
+  Blog::EmDashCheck.scan_file(f, f.delete_prefix("#{root}/"))
+end
+
+if hits.empty?
+  puts "bin/em-dashes: no em-dashes outside the author's text in #{files.size} page(s)"
+  exit 0
+end
+warn "bin/em-dashes: em-dash (U+2014) in copy outside [data-post-body] / [data-intro]:"
+hits.each { |h| warn "  #{h}" }
+warn "Reword it (comma, colon, parentheses or a new sentence). If it is Grant's own text, it belongs in the guarded element."
+exit 1
