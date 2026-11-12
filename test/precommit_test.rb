@@ -56,11 +56,43 @@ class PrecommitTest < Minitest::Test
     assert_blocked(/bin\/guard good-post failed/)
   end
 
+  def restore_from_head(rel) = File.write(File.join(@dir, rel), git("show", "HEAD:#{rel}"))
+
+  def guard_ok_in_working_tree? = Blog::Guard.new(Blog::Site.new(@dir)).check("good-post").ok?
+
+  # Bad page staged, good page in the working tree: the staged one is what gets committed.
   def test_checks_staged_version_not_working_tree
     edit("site/posts/good-post/index.html") { |h| h.sub("<p>Last paragraph.</p>", "") }
     git "add", "-A"
-    edit("site/posts/good-post/index.html") { |h| h.sub("<footer>", "<p>Last paragraph.</p><footer>") }
+    restore_from_head("site/posts/good-post/index.html")
+    assert guard_ok_in_working_tree?, "the working tree page should be good, so only the staged one can fail"
     assert_blocked(/bin\/guard good-post failed/)
+  end
+
+  # Good page staged, bad page in the working tree: nothing bad is being committed.
+  def test_ignores_bad_working_tree_when_staged_snapshot_is_good
+    edit("site/posts/good-post/index.html") { |h| h.sub("<footer>", "<footer class=\"x\">") }
+    git "add", "-A"
+    edit("site/posts/good-post/index.html") { |h| h.sub("<p>Last paragraph.</p>", "") }
+    refute guard_ok_in_working_tree?, "the working tree page should be bad"
+    out, ok = precommit
+    assert ok, out
+  end
+
+  def test_ignores_stale_feed_only_in_working_tree
+    edit("site/posts/good-post/index.md") { |m| m.sub("Never published.", "Never ever published.") }
+    system("#{@dir}/bin/meta", out: File::NULL, exception: true)
+    git "add", "-A"
+    restore_from_head("site/feed.xml")
+    out, ok = precommit
+    assert ok, out
+  end
+
+  def test_blocks_stale_staged_feed_even_if_working_tree_is_fresh
+    edit("site/posts/good-post/index.md") { |m| m.sub("Never published.", "Never ever published.") }
+    git "add", "-A"
+    system("#{@dir}/bin/meta", out: File::NULL, exception: true)
+    assert_blocked(/site\/feed.xml out of date/)
   end
 
   def test_blocks_stale_feed
@@ -93,6 +125,18 @@ class PrecommitTest < Minitest::Test
     assert_match(/WARNING \(ALLOW_SLUG_CHANGE=1\)/, out)
   end
 
+  # Only the exact value 1 lifts the slug freeze.
+  def test_slug_freeze_escape_hatch_needs_exactly_1
+    git "rm", "-r", "-q", "site/posts/good-post"
+    system("#{@dir}/bin/meta", out: File::NULL)
+    git "add", "-A"
+    ["0", "", "true", " 1"].each do |value|
+      out, ok = precommit("ALLOW_SLUG_CHANGE" => value)
+      refute ok, "ALLOW_SLUG_CHANGE=#{value.inspect} must not lift the slug freeze"
+      assert_match(/deleted or renamed: good-post/, out)
+    end
+  end
+
   def test_blocks_staged_drafts
     FileUtils.mkdir_p(File.join(@dir, "drafts/wip"))
     File.write(File.join(@dir, "drafts/wip/index.md"), "secret")
@@ -110,6 +154,21 @@ class PrecommitTest < Minitest::Test
     edit("site/intro.md") { |m| m.sub("A second paragraph.", "A new second paragraph.") }
     git "add", "-A"
     assert_blocked(/home page intro does not match site\/intro\.md/)
+  end
+
+  def test_blocks_em_dash_in_staged_page_chrome
+    edit("site/posts/good-post/index.html") { |h| h.sub("<title>A “good” fixture post</title>", "<title>A “good” fixture post \u2014 Fixture</title>") }
+    git "add", "-A"
+    assert_blocked(%r{em-dash in copy outside.*\n.*site/posts/good-post/index\.html:5: em-dash in text of <title>})
+  end
+
+  def test_allows_em_dash_in_authors_words
+    edit("site/posts/good-post/index.md") { |m| m.sub("Last paragraph.", "Last \u2014 paragraph.") }
+    edit("site/posts/good-post/index.html") { |h| h.sub("Last paragraph.", "Last \u2014 paragraph.") }
+    system("#{@dir}/bin/meta", out: File::NULL, exception: true)
+    git "add", "-A"
+    out, ok = precommit
+    assert ok, out
   end
 
   def test_allows_intro_change_with_matching_home_page

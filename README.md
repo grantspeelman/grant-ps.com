@@ -34,9 +34,13 @@ Cloudflare Workers Builds deploys on every push to `main`: no build command, dep
 | `bin/render <slug>` | Print a post's body HTML from the markdown, the starting point for its page (`--intro` for the home page intro) |
 | `bin/guard [slug\|--intro\|--all]` | Fidelity check (default: staged posts, plus the intro if the home page or `site/intro.md` is staged) |
 | `bin/check-pages [slug...]` | Accessibility (axe-core, light and dark), sideways-scroll and broken-asset checks, plus screenshots in `tmp/check-pages/` |
-| `bin/precommit` | What the hook runs: slug checks, guard, meta check, no drafts |
+| `bin/em-dashes [file...]` | Fail on an em-dash in any page copy outside the author's text (`[data-post-body]`, `[data-intro]`); default: every `site/**/*.html` |
+| `bin/precommit` | What the hook runs: slug checks, guard, meta check, em-dashes in staged pages, no drafts |
 | `bin/preview [slug]` | Serve `site/` on http://localhost:4000 |
-| `bundle exec rake test` | Run the tests |
+| `bundle exec rake test` | Run the tests (including a check that `site.yml` and `wrangler.jsonc` parse) |
+| `bundle exec standardrb` | Ruby style check with [Standard](https://github.com/standardrb/standard) (`--fix` to correct); config in `.standard.yml` |
+
+CI (`.github/workflows/checks.yml`) runs the tests, `standardrb`, `bin/guard --all`, `bin/meta --check` and `bin/em-dashes`, plus [actionlint](https://github.com/rhysd/actionlint) on the workflows and a gitleaks scan of the full history.
 
 Frontmatter fields and rules are in `PLAN.md` section 5. The build story is in `BUILD_LOG.md`.
 
