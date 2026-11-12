@@ -52,16 +52,18 @@ A map for agents (and Grant): which file owns each concern, which test covers it
 |---|---|---|---|
 | Frontmatter validation | `lib/blog/post.rb` (fields: `PLAN.md` section 5) | `test/post_test.rb` | `bundle exec rake test`, `bin/meta --check` |
 | Markdown rendering | `lib/blog/markdown.rb`, `bin/render` | `test/guard_test.rb`, `test/meta_test.rb` | `bundle exec rake test`, `bin/guard --all`, `bin/meta --check` |
-| Block extraction, fidelity guard | `lib/blog/blocks.rb`, `lib/blog/guard.rb`, `bin/guard` | `test/guard_test.rb` | `bundle exec rake test`, `bin/guard --all` |
-| Feed and sitemap | `lib/blog/meta.rb`, `bin/meta` | `test/meta_test.rb` | `bundle exec rake test`, `bin/meta --check` |
+| Block extraction, fidelity guard | `lib/blog/blocks.rb`, `lib/blog/guard.rb`, `bin/guard` | `test/guard_test.rb`, `test/commands_test.rb` | `bundle exec rake test`, `bin/guard --all` |
+| Feed and sitemap | `lib/blog/meta.rb`, `bin/meta` | `test/meta_test.rb`, `test/commands_test.rb` | `bundle exec rake test`, `bin/meta --check` |
 | Pre-commit checks, slug freeze | `lib/blog/precommit.rb`, `bin/precommit`, `.githooks/pre-commit` | `test/precommit_test.rb` | `bundle exec rake test`, then `bin/precommit` with the change staged |
-| Site config | `lib/blog/site.rb`, `site.yml` | every test, through `test/fixtures/root/site.yml` | `bundle exec rake test`, `bin/guard --all`, `bin/meta --check` |
+| Site config | `lib/blog/site.rb`, `site.yml` | `test/config_test.rb` (the real `site.yml`), every other test through `test/fixtures/root/site.yml` | `bundle exec rake test`, `bin/guard --all`, `bin/meta --check` |
+| Em-dashes in page copy | `lib/blog/em_dash_check.rb`, `bin/em-dashes` | `test/em_dash_check_test.rb`, `test/precommit_test.rb` | `bundle exec rake test`, `bin/em-dashes` |
+| Ruby style | `.standard.yml`, `Gemfile` | none; it is the check | `bundle exec standardrb` |
 | Browser checks | `bin/check-pages`, `package.json` | none; it is the check | `bin/check-pages` |
 | Preview | `bin/preview` (mirrors Cloudflare's trailing slashes, 404 page and `.assetsignore`) | `bin/check-pages` runs on it | `bin/preview`, then http://localhost:4000/ |
-| Deploy config | `wrangler.jsonc`, `site/.assetsignore` | none | `bin/preview` for `.assetsignore`; the rest only on a Cloudflare preview deployment of a pushed branch |
+| Deploy config | `wrangler.jsonc`, `site/.assetsignore` | `test/config_test.rb` (`wrangler.jsonc` settings) | `bin/preview` for `.assetsignore`; the rest only on a Cloudflare preview deployment of a pushed branch |
 | Page shell and design | `design/shell.md`, `design/BRIEF.md`, `site/assets/` | `bin/guard` (words), `bin/check-pages` (accessibility, layout) | `bin/guard --all`, `bin/check-pages` |
 | Skills | `.claude/skills/publish/SKILL.md`, `.claude/skills/regenerate-site/SKILL.md` | none | run the skill, which ends with its own checks |
-| CI | `.github/workflows/checks.yml`, `.github/workflows/devcontainer-ci.yml` | none | push a branch and open a pull request |
+| CI | `.github/workflows/checks.yml`, `.github/workflows/devcontainer-ci.yml` | actionlint, in CI only | push a branch and open a pull request |
 | Dev container | `.devcontainer/` (start at `.devcontainer/README.md`) | `.devcontainer/container-structure-test.yaml`, `.devcontainer/smoke-test.sh` | `.github/workflows/devcontainer-ci.yml`, which runs when `.devcontainer/` changes |
 
 ### Environment and services
@@ -79,6 +81,9 @@ A map for agents (and Grant): which file owns each concern, which test covers it
 | Check | Pre-commit hook (`.githooks/pre-commit`, then `bin/precommit`) | CI (`.github/workflows/checks.yml`) |
 |---|---|---|
 | Tests | no | `bundle exec rake test` |
+| Ruby style | no | `bundle exec standardrb` |
+| Em-dashes in page copy | staged pages | `bin/em-dashes` |
+| Workflow files | no | actionlint |
 | Fidelity guard | staged posts, and the intro if `site/index.html` or `site/intro.md` is staged | `bin/guard --all` |
 | Frontmatter | staged posts | through `bin/guard --all` and `bin/meta --check` |
 | Feed and sitemap up to date | yes | `bin/meta --check` |
