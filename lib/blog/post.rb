@@ -55,16 +55,16 @@ module Blog
         errs << "slug `#{slug}` does not equal folder name `#{folder}`" unless slug == folder
       end
 
-      %w[date updated].each do |k|
-        next if data[k].nil?
-        begin
-          to_date(data[k])
-        rescue ArgumentError, TypeError
-          errs << "`#{k}` must be an ISO 8601 date (YYYY-MM-DD), got #{data[k].inspect}"
-        end
+      dates = %w[date updated].to_h do |k|
+        next [k, nil] if data[k].nil?
+        [k, to_date(data[k])]
+      rescue ArgumentError, TypeError
+        errs << "`#{k}` must be an ISO 8601 date (YYYY-MM-DD), got #{data[k].inspect}"
+        [k, nil]
       end
-      if data["date"].is_a?(Date) && data["updated"].is_a?(Date) && data["updated"] < data["date"]
-        errs << "`updated` (#{data["updated"]}) is before `date` (#{data["date"]})"
+      # Compare the parsed dates, so a quoted date ("2026-10-05") is held to the same rule.
+      if dates["date"] && dates["updated"] && dates["updated"] < dates["date"]
+        errs << "`updated` (#{dates["updated"].iso8601}) is before `date` (#{dates["date"].iso8601})"
       end
 
       if data.key?("tags")

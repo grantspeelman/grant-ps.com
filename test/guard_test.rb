@@ -95,11 +95,39 @@ class GuardTest < Minitest::Test
     with_page_edit(" data-post-body", "") { |r| assert_fails r, /exactly one \[data-post-body\]/ }
   end
 
+  # Only ASCII whitespace is normalised. A non-breaking space is a different character
+  # from a space, in either direction.
+  def test_ascii_whitespace_differences_pass
+    with_page_edit("<p>Last paragraph.</p>", "<p>\n\tLast \r\n  paragraph.\f</p>") { |r| assert r.ok?, r.errors.join("\n") }
+  end
+
+  def test_fails_when_page_turns_a_space_into_a_non_breaking_space
+    with_page_edit("<p>Last paragraph.</p>", "<p>Last&nbsp;paragraph.</p>") { |r| assert_fails r, /first difference at character 5/ }
+  end
+
+  def test_fails_when_page_turns_a_non_breaking_space_into_a_space
+    with_fixture_copy do |root|
+      path = File.join(post_dir(root), "index.md")
+      File.write(path, File.read(path).sub("Last paragraph.", "Last\u00A0paragraph."))
+      assert_fails check(root), /first difference at character 5/
+    end
+  end
+
+  def test_fails_on_other_unicode_spaces
+    ["\u2009", "\u202F", "\u3000"].each do |space|
+      with_page_edit("<p>Last paragraph.</p>", "<p>Last#{space}paragraph.</p>") { |r| assert_fails r, /does not match/ }
+    end
+  end
+
   def test_fails_on_missing_html
     with_fixture_copy do |root|
       File.delete(File.join(post_dir(root), "index.html"))
       assert_fails check(root), /missing .*index\.html/
     end
+  end
+
+  def test_fails_on_missing_post_folder
+    assert_fails check(FIXTURE_ROOT, "no-such-post"), %r{no post folder site/posts/no-such-post/index\.md}
   end
 
   def test_page_body_marks_code_blocks_for_the_shell
