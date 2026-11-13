@@ -1,0 +1,34 @@
+/* Flare for "Engineers Are Becoming Mechanics". The workshop job card, injected by flare.js.
+   No motion, palette tokens only. Everything it says restates the workshop section of the post. */
+
+.jobcard {
+  margin: 1.25em 0 0; padding: .9rem 1rem 1rem;
+  border: 1px dashed var(--rule); border-top: 3px solid var(--accent); border-radius: 3px;
+  background: var(--card);
+  font-family: var(--mono); font-size: .85rem; line-height: 1.6;
+  min-inline-size: 0;
+}
+.jobcard legend {
+  padding: 0 .4rem; color: var(--muted); font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.jobcard-stages { display: grid; gap: .1rem; }
+.jobcard-stages label {
+  display: flex; align-items: center; gap: .6rem;
+  min-height: 1.75rem; padding: .2rem 0; cursor: pointer;
+}
+.jobcard input { flex: none; margin: 0; accent-color: var(--accent); width: 1rem; height: 1rem; }
+.jobcard-no { color: var(--accent); font-weight: 700; }
+.jobcard input:checked ~ span:last-child { font-weight: 700; }
+
+.jobcard-out {
+  display: grid; grid-template-columns: max-content 1fr; gap: .25rem .9rem;
+  margin: .8rem 0 0; padding-top: .8rem; border-top: 1px dashed var(--rule);
+}
+.jobcard-out dt { color: var(--muted); text-transform: uppercase; font-size: .75rem; letter-spacing: .06em; padding-top: .1rem; }
+.jobcard-out dd { margin: 0; color: var(--ink); }
+.jobcard-out dd:last-of-type { font-family: var(--sans); font-size: .95rem; }
+
+@media (forced-colors: active) {
+  .jobcard, .jobcard-out { border-color: CanvasText; }
+}
