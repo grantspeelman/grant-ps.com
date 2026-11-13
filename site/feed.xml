@@ -12,12 +12,12 @@
       <link>https://grant-ps.com/posts/engineers-are-becoming-mechanics/</link>
       <guid isPermaLink="true">https://grant-ps.com/posts/engineers-are-becoming-mechanics/</guid>
       <pubDate>Fri, 13 Nov 2026 00:00:00 +0000</pubDate>
-      <description>Every engineer I know is trying to work out where they fit now. ... I want to put down a prediction, so I can be held to it later.</description>
+      <description>Every engineer I know is trying to work out where they fit now. ... I want to put down a prediction, so I can reflect on it later.</description>
       <category>ai</category>
       <category>engineering</category>
       <category>career</category>
       <category>agents</category>
-      <content:encoded><![CDATA[<p>Every engineer I know is trying to work out where they fit now. One camp says engineering is dead. The other says fundamentals matter more than ever. I don't think either camp has it quite right, and I want to put down a prediction, so I can be held to it later.</p>
+      <content:encoded><![CDATA[<p>Every engineer I know is trying to work out where they fit now. One camp says engineering is dead. The other says fundamentals matter more than ever. I don't think either camp has it quite right, and I want to put down a prediction, so I can reflect on it later.</p>
 <h2>The bar has moved</h2>
 <p>Things that used to need an engineer don't anymore. A personal website, a small web app, an internal tool: someone with an idea and an AI model can build it themselves, and it will comfortably handle the load that a personal site or small business actually sees. Tell the model "my site is slow" and it will go and find out why.</p>
 <p>That's not a toy. The models lay down a genuinely decent foundation. How far a non-engineer can take an idea, without real engineering practices and without an engineer looking at it, has gone up a lot, and it keeps going up.</p>

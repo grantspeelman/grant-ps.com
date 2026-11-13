@@ -2,11 +2,11 @@
 title: "Engineers Are Becoming Mechanics"
 slug: engineers-are-becoming-mechanics
 date: 2026-11-13
-description: "Every engineer I know is trying to work out where they fit now. ... I want to put down a prediction, so I can be held to it later."
+description: "Every engineer I know is trying to work out where they fit now. ... I want to put down a prediction, so I can reflect on it later."
 tags: [ai, engineering, career, agents]
 ---
 
-Every engineer I know is trying to work out where they fit now. One camp says engineering is dead. The other says fundamentals matter more than ever. I don't think either camp has it quite right, and I want to put down a prediction, so I can be held to it later.
+Every engineer I know is trying to work out where they fit now. One camp says engineering is dead. The other says fundamentals matter more than ever. I don't think either camp has it quite right, and I want to put down a prediction, so I can reflect on it later.
 
 ## The bar has moved
 
