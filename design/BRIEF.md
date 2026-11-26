@@ -101,7 +101,7 @@ A festive look sits on top of the notebook for the holidays. It is a layer, not 
 | `--mark` | `#ffe1dc` | `#4a1f1d` |
 | `--rule` | `#e6d5d3` | `#3a2a2a` |
 
-  Worst case over a grid line: light accent 6.1:1, muted 5.66:1, accent on the highlighter 5.71:1; dark accent 8.01:1, muted 6.76:1, accent on the highlighter 6.33:1. Snow and the stripe are decorative and carry no information.
+  The snow is fixed, so as the page scrolls a dot can sit behind any text. The worst case is a snow dot under a grid line under the `site.yml` card: light muted 4.64:1, accent 5.0:1, ink 11.37:1; dark muted 4.67:1, accent 5.53:1, ink 9.67:1. Accent on the highlighter: light 5.71:1, dark 6.33:1. That caps the snow (`--snow`) at 15% opacity in light and 10% in dark; if you change the snow, the paper or a text colour, recompute this stack first. Snow and the stripe are decorative and carry no information.
 - **Motion:** none added. The cursor keeps its four blinks and stops under `prefers-reduced-motion`.
 - **Checking:** `bin/check-pages` checks whatever the date says. Outside the season, also check the layer by opening pages with `?festive=1`.
 

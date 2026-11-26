@@ -2,15 +2,17 @@
    Everything here is scoped to html.festive, which festive.js sets from 1 December to 6 January (visitor's clock),
    or on demand with ?festive=1 (?festive=0 turns it off). Without the class, or without JavaScript, the page is the normal notebook.
    Berry-red accent and a pink highlighter, a candy stripe under the top bar, a striped cursor, and static snow on the graph paper.
-   Contrast, worst case over a grid line: light accent 6.1:1, accent on mark 5.71:1; dark accent 8.01:1, accent on mark 6.33:1. */
+   Contrast, worst case (a snow dot under a grid line under the site.yml card): light muted 4.64:1, accent 5.0:1, ink 11.37:1;
+   dark muted 4.67:1, accent 5.53:1, ink 9.67:1. Accent on mark: light 5.71:1, dark 6.33:1.
+   The snow opacity (--snow) is at its ceiling for those figures: raise it and muted text drops below 4.5:1. */
 html.festive {
   --paper: #fcfaf7; --grid: rgba(150, 30, 30, 0.06); --accent: #ad1f1a; --mark: #ffe1dc; --rule: #e6d5d3;
-  --card: rgba(150, 30, 30, 0.03); --snow: rgba(110, 140, 170, 0.35); --stripe-a: #ad1f1a; --stripe-b: #fff;
+  --card: rgba(150, 30, 30, 0.03); --snow: rgba(110, 140, 170, 0.15); --stripe-a: #ad1f1a; --stripe-b: #fff;
 }
 @media (prefers-color-scheme: dark) {
   html.festive {
     --paper: #140f10; --grid: rgba(255, 160, 150, 0.05); --ink: #ece3e2; --muted: #ab9d9c; --accent: #ff8f86; --mark: #4a1f1d;
-    --rule: #3a2a2a; --card: rgba(255, 255, 255, 0.03); --snow: rgba(255, 255, 255, 0.28); --stripe-a: #d8453c; --stripe-b: #f3e9e8;
+    --rule: #3a2a2a; --card: rgba(255, 255, 255, 0.03); --snow: rgba(255, 255, 255, 0.1); --stripe-a: #d8453c; --stripe-b: #f3e9e8;
   }
 }
 /* Snow resting on the graph paper (decorative, static) */
