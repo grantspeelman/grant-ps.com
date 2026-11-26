@@ -1,0 +1,37 @@
+/* grant-ps.com seasonal layer: Candy cane. Rules in design/BRIEF.md, "Seasonal layer".
+   Everything here is scoped to html.festive, which festive.js sets from 1 December to 6 January (visitor's clock),
+   or on demand with ?festive=1 (?festive=0 turns it off). Without the class, or without JavaScript, the page is the normal notebook.
+   Berry-red accent and a pink highlighter, a candy stripe under the top bar, a striped cursor, and static snow on the graph paper.
+   Contrast, worst case over a grid line: light accent 6.1:1, accent on mark 5.71:1; dark accent 8.01:1, accent on mark 6.33:1. */
+html.festive {
+  --paper: #fcfaf7; --grid: rgba(150, 30, 30, 0.06); --accent: #ad1f1a; --mark: #ffe1dc; --rule: #e6d5d3;
+  --card: rgba(150, 30, 30, 0.03); --snow: rgba(110, 140, 170, 0.35); --stripe-a: #ad1f1a; --stripe-b: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  html.festive {
+    --paper: #140f10; --grid: rgba(255, 160, 150, 0.05); --ink: #ece3e2; --muted: #ab9d9c; --accent: #ff8f86; --mark: #4a1f1d;
+    --rule: #3a2a2a; --card: rgba(255, 255, 255, 0.03); --snow: rgba(255, 255, 255, 0.28); --stripe-a: #d8453c; --stripe-b: #f3e9e8;
+  }
+}
+/* Snow resting on the graph paper (decorative, static) */
+.festive body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    radial-gradient(circle, var(--snow) 1.6px, transparent 2.2px),
+    radial-gradient(circle, var(--snow) 1.1px, transparent 1.7px);
+  background-size: 168px 192px, 120px 144px;
+  background-position: 36px 60px, 96px 12px;
+}
+/* Candy stripe under the top bar */
+.festive .topbar { border-bottom: 0; }
+.festive .topbar::after {
+  content: ""; display: block; height: 5px;
+  background: repeating-linear-gradient(-45deg, var(--stripe-a) 0 8px, var(--stripe-b) 8px 16px);
+}
+/* Striped cursor (still blinks four times, still under prefers-reduced-motion) */
+.festive .cursor { background: repeating-linear-gradient(-45deg, var(--stripe-a) 0 3px, var(--stripe-b) 3px 6px); box-shadow: inset 0 0 0 1px var(--stripe-a); }
+.festive .entry-head .abstract { border-left-style: dashed; }
+@media (forced-colors: active) {
+  .festive body::before { display: none; }
+  .festive .topbar::after { background: CanvasText; height: 1px; }
+}

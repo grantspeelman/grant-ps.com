@@ -83,6 +83,28 @@ JavaScript flare is welcome when it helps the post's point, as long as it is pur
 
 Flare **may not**: change, add or hide the author's words (flare is excluded from the guard, so this is on trust); carry information that the text does not also give; replace the shell (header, footer, metadata, fonts); load anything from another domain; autoplay sound; animate for more than 5 seconds or ignore `prefers-reduced-motion`; break the page with JS disabled. Decorative flare gets `aria-hidden="true"`; meaningful flare gets a text alternative. Interactive flare must work with a keyboard and show focus.
 
+## Seasonal layer
+
+A festive look sits on top of the notebook for the holidays. It is a layer, not a redesign: the identity above is unchanged, and removing the layer gives the normal notebook back. Grant picked "Candy cane" in November 2026, over "Pine and gold" (pine green, gold highlighter, a tree cursor, falling snow) and "Fairy lights" (today's green with a twinkling string of lights).
+
+- **When:** 1 December to 6 January, by the visitor's own clock. `site/assets/festive.js` adds the class `festive` to `<html>` in that window; nothing needs committing to switch it on or off. `?festive=1` on any URL forces it on (for previews), `?festive=0` forces it off.
+- **Without JavaScript** the page is the normal notebook. `site/assets/festive.css` styles only `html.festive`.
+- **What changes:** the accent turns berry red and the highlighter pink; a red and white candy stripe runs under the top bar; the cursor is striped; static snow dots rest on the graph paper; the abstract's rule is dashed; the `site.yml` card's theme line reads `festive` (swapped by `festive.js` from `data-festive-text`). Post words, layout, type, code panels and flare are untouched.
+- **Colour (festive values; other tokens as above):**
+
+| Token | Light | Dark |
+|---|---|---|
+| `--paper` | `#fcfaf7` | `#140f10` |
+| `--ink` | as above | `#ece3e2` |
+| `--muted` | as above | `#ab9d9c` |
+| `--accent` | `#ad1f1a` | `#ff8f86` |
+| `--mark` | `#ffe1dc` | `#4a1f1d` |
+| `--rule` | `#e6d5d3` | `#3a2a2a` |
+
+  Worst case over a grid line: light accent 6.1:1, muted 5.66:1, accent on the highlighter 5.71:1; dark accent 8.01:1, muted 6.76:1, accent on the highlighter 6.33:1. Snow and the stripe are decorative and carry no information.
+- **Motion:** none added. The cursor keeps its four blinks and stops under `prefers-reduced-motion`.
+- **Checking:** `bin/check-pages` checks whatever the date says. Outside the season, also check the layer by opening pages with `?festive=1`.
+
 ## Accessibility checklist (every page)
 
 - `lang="en"` on `<html>`; one `<h1>`; headings in order with no skipped levels.

@@ -36,6 +36,8 @@ Rules that apply to every page:
 <meta name="twitter:image" content="{{og_image}}">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/festive.css">
+<script src="/assets/festive.js"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{analytics_token}}"}'></script>
 </head>
 ```
@@ -54,6 +56,8 @@ Posts also add, after `og:image`:
 <meta property="article:published_time" content="{{date}}">
 <meta property="article:modified_time" content="{{updated}}">   <!-- only if updated is set -->
 ```
+
+The two `festive` lines load the seasonal layer (see "Seasonal layer" in `design/BRIEF.md`). They stay in every page all year: outside the season `festive.js` does nothing and `festive.css` matches nothing.
 
 Posts add the shared enhancement script after the stylesheet: `<script src="/assets/notebook.js" defer></script>`. Posts with flare add their own files after that: `<link rel="stylesheet" href="flare.css">` and `<script src="flare.js" defer></script>`.
 
@@ -147,7 +151,7 @@ Posts add the shared enhancement script after the stylesheet: `<script src="/ass
 <span class="k">html:</span>    <span class="v">written by hand</span>
 <span class="k">build:</span>   <span class="v">none</span>
 <span class="k">host:</span>    <span class="v">cloudflare</span>
-<span class="k">theme:</span>   <span class="v">follows your system</span></pre>
+<span class="k">theme:</span>   <span class="v" data-festive-text="festive">follows your system</span></pre>
   </section>
 
   <section class="sect" aria-labelledby="writing">
@@ -182,7 +186,7 @@ Posts add the shared enhancement script after the stylesheet: `<script src="/ass
 - The count reads `1 entry` or `{{n}} entries`. With no posts, leave the count out and replace the list with `<p class="ls-empty">No posts yet.</p>`.
 - `{{intro}}` is the output of `bin/render --intro`, pasted in unchanged: Grant's intro from `site/intro.md`, rendered by the same renderer as posts. `bin/guard --intro` checks it word for word, like a post body. Never write or edit `site/intro.md` yourself.
 - Until `site/intro.md` exists, the intro is a placeholder instead of the `data-intro` div: `<p class="todo">TODO(grant): a line or two about who you are and what you write about.</p>`.
-- The `site.yml` card is decorative and states only facts about how the site is made. Keep its wording unless the facts change.
+- The `site.yml` card is decorative and states only facts about how the site is made. Keep its wording unless the facts change. During the season `festive.js` replaces the theme value with its `data-festive-text`, which is then the fact.
 
 ## 404 main
 
